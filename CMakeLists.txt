@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.12)
+project(toolbox VERSION 1.0.0)
+
+find_package(daq-cmake REQUIRED)
+daq_setup_environment()
+
+find_package(nlohmann_json REQUIRED)
+find_package(logging REQUIRED)
+find_package(Boost COMPONENTS iostreams filesystem REQUIRED)
+set(BOOST_LIBS Boost::iostreams Boost::filesystem)
+
+##############################################################################
+# Schema
+
+#daq_codegen(*.jsonnet TEST TEMPLATES Structs.hpp.j2 Nljs.hpp.j2)
+
+##############################################################################
+# Main library
+
+# We don't have a real library, but we want to create a target for
+# dependents to be able to depend on
+daq_add_library(UtilityFunctions.cpp LINK_LIBRARIES nlohmann_json::nlohmann_json logging::logging ${BOOST_LIBS} resolv)
+
+##############################################################################
+
+# Test applications
+daq_add_application(readout_test_ratelimiter test_ratelimiter_app.cxx TEST LINK_LIBRARIES toolbox)
+
+##############################################################################
+
+# Unit tests
+
+#daq_add_unit_test(BufferedReadWrite_test       LINK_LIBRARIES toolbox ${BOOST_LIBS})
+
+daq_install()
