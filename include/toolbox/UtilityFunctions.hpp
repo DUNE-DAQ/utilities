@@ -40,14 +40,6 @@ template<typename T>
 std::string
 to_string(const T&);
 
-template<typename M>
-bool
-map_value_comparator(typename M::value_type& p1, typename M::value_type& p2);
-
-template<typename T>
-std::vector<T>
-sanitize(const std::vector<T>& vec);
-
 template<typename T, typename U>
 T
 safe_enum_cast(const U& value, const std::vector<T>& valid);
@@ -122,13 +114,6 @@ get_seconds_since_epoch();
  */
 std::string
 format_timestamp(uint64_t raw_timestamp, uint32_t clock_frequency_hz); // NOLINT(build/unsigned)
-
-/**
- * ""
- * @return
- */
-double
-convert_bits_to_float(uint64_t bits, bool is_double_precision = false); // NOLINT(build/unsigned)
 
 template<typename T>
 std::string

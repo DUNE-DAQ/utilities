@@ -145,38 +145,6 @@ format_timestamp(uint64_t raw_timestamp, uint32_t clock_frequency_hz) // NOLINT(
 }
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-double
-convert_bits_to_float(uint64_t bits, bool is_double_precision) // NOLINT(build/unsigned)
-{
-  uint32_t mantissa_shift = is_double_precision ? 52 : 23;                        // NOLINT(build/unsigned)
-  uint64_t exponent_mask = is_double_precision ? 0x7FF0000000000000 : 0x7f800000; // NOLINT(build/unsigned)
-  uint32_t bias = is_double_precision ? 1023 : 127;                               // NOLINT(build/unsigned)
-  uint32_t sign_shift = is_double_precision ? 63 : 31;                            // NOLINT(build/unsigned)
-
-  int32_t sign = (bits >> sign_shift) & 0x01;
-  uint32_t exponent_biased = ((bits & exponent_mask) >> mantissa_shift); // NOLINT(build/unsigned)
-  int32_t exponent = exponent_biased - bias;
-
-  int32_t power = -1;
-  double mantissa = 0.0;
-  for (uint32_t i = 0; i < mantissa_shift; ++i) {                      // NOLINT(build/unsigned)
-    uint64_t mantissa_bit = (bits >> (mantissa_shift - i - 1)) & 0x01; // NOLINT(build/unsigned)
-    mantissa += mantissa_bit * pow(2.0, power);
-    --power;
-  }
-
-  if (exponent_biased == 0) {
-    ++exponent;
-    if (mantissa == 0)
-      return 0;
-  } else {
-    mantissa += 1.0;
-  }
-  return (sign ? -1 : 1) * pow(2.0, exponent) * mantissa;
-}
-//-----------------------------------------------------------------------------
-
 template std::string
 vec_fmt<uint32_t>(const std::vector<uint32_t>& vec); // NOLINT(build/unsigned)
 template std::string

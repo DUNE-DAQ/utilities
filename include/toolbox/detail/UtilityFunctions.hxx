@@ -55,33 +55,6 @@ to_string(const T& v)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-template<typename M>
-bool
-map_value_comparator(typename M::value_type& p1, typename M::value_type& p2)
-{
-  return p1.second < p2.second;
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-template<typename T>
-std::vector<T>
-sanitize(const std::vector<T>& vec)
-{
-  // Sanitise the inputs, by copying
-  std::vector<uint32_t> sorted(vec);
-
-  // ...sorting...
-  std::sort(sorted.begin(), sorted.end());
-
-  // and delete the duplicates (erase+unique require a sorted vector to delete duplicates)
-  sorted.erase(std::unique(sorted.begin(), sorted.end()), sorted.end());
-
-  return sorted;
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
 template<typename T, typename U>
 T
 safe_enum_cast(const U& value, const std::vector<T>& valid, const T& def)

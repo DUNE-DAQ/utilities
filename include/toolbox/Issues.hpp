@@ -46,6 +46,10 @@ ERS_DECLARE_ISSUE_BASE(toolbox,                        ///< Namespace
                        ERS_EMPTY                       ///< Attribute of this class
 )
 
+ERS_DECLARE_ISSUE(toolbox,                             // Namespace
+                  ThreadingIssue,                      // Issue Class Name
+                  "Threading Issue detected: " << err, // Message
+                  ((std::string)err))                  // Message parameters
 // Reenable coverage collection LCOV_EXCL_STOP
 } // namespace dunedaq
 
