@@ -6,8 +6,7 @@ daq_setup_environment()
 
 find_package(nlohmann_json REQUIRED)
 find_package(logging REQUIRED)
-find_package(Boost COMPONENTS iostreams filesystem REQUIRED)
-set(BOOST_LIBS Boost::iostreams Boost::filesystem)
+find_package(Boost COMPONENTS iostreams REQUIRED)
 
 ##############################################################################
 # Schema
@@ -19,7 +18,7 @@ set(BOOST_LIBS Boost::iostreams Boost::filesystem)
 
 # We don't have a real library, but we want to create a target for
 # dependents to be able to depend on
-daq_add_library(UtilityFunctions.cpp LINK_LIBRARIES nlohmann_json::nlohmann_json logging::logging ${BOOST_LIBS} resolv)
+daq_add_library(UtilityFunctions.cpp LINK_LIBRARIES nlohmann_json::nlohmann_json logging::logging Boost::iostreams stdc++fs resolv)
 
 ##############################################################################
 

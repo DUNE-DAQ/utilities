@@ -9,17 +9,9 @@
 #include "toolbox/UtilityFunctions.hpp"
 #include "toolbox/Issues.hpp"
 
-// Boost Headers
-#include "boost/foreach.hpp"
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
 // C++ Headers
-#include <cstdarg>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
 #include <ctime>
+#include <filesystem>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -99,7 +91,7 @@ throw_if_not_file(const std::string& path)
 {
 
   // FIXME: Review the implementation. The function never returns
-  namespace fs = boost::filesystem;
+  namespace fs = std::filesystem;
 
   // Check that the path exists and that it's not a directory
   fs::path cfgFile(path);

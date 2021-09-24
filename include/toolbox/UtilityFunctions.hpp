@@ -11,20 +11,7 @@
 #ifndef TOOLBOX_INCLUDE_TOOLBOX_UTILITYFUNCTIONS_HPP_
 #define TOOLBOX_INCLUDE_TOOLBOX_UTILITYFUNCTIONS_HPP_
 
-// Boost Headers
-#include <boost/format.hpp>
-#include <boost/format/group.hpp>
-#include <boost/static_assert.hpp>
-#include <boost/type_traits/is_signed.hpp>
-#include <boost/type_traits/is_unsigned.hpp>
-#include <boost/unordered_map.hpp>
-
 // C++ Headers
-#include <chrono>
-#include <cstdint>
-#include <cstdlib>
-#include <iomanip>
-#include <istream>
 #include <string>
 #include <vector>
 
