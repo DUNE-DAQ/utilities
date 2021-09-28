@@ -29,7 +29,7 @@ to_string(const T&);
 
 template<typename T, typename U>
 T
-safe_enum_cast(const U& value, const std::vector<T>& valid);
+safe_enum_cast(const U& value, const std::vector<T>& valid, const T& def);
 
 /**
  * Sleeps for a given number of milliseconds
@@ -108,7 +108,7 @@ vec_fmt(const std::vector<T>& vec);
 
 template<typename T>
 std::string
-short_vec_fmt(const std::vector<T>& vec);
+short_vec_fmt(const std::vector<T>& sorted_vec);
 
 } // namespace dunedaq
 

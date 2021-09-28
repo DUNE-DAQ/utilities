@@ -50,6 +50,16 @@ ERS_DECLARE_ISSUE(toolbox,                             // Namespace
                   ThreadingIssue,                      // Issue Class Name
                   "Threading Issue detected: " << err, // Message
                   ((std::string)err))                  // Message parameters
+
+    
+ERS_DECLARE_ISSUE(toolbox,
+                  ServiceNotFound,
+                  "The service " << service << " was not found in DNS",
+                  ((std::string)service))
+ERS_DECLARE_ISSUE(toolbox,
+                  NameNotFound,
+                  "The hostname " << name << " could not be resolved: " << error,
+                  ((std::string)name)((std::string)error))
 // Reenable coverage collection LCOV_EXCL_STOP
 } // namespace dunedaq
 

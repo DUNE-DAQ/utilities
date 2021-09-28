@@ -69,7 +69,8 @@ public:
       m_input_buffer.insert(
         m_input_buffer.begin(), std::istreambuf_iterator<char>(m_rawdata_ifs), std::istreambuf_iterator<char>());
       TLOG_DEBUG(15) << "Available bytes " << std::to_string(m_input_buffer.size());
-
+    } catch (CannotOpenFile const&) {
+      throw;
     } catch (const std::exception& ex) {
       throw GenericConfigurationError(ERS_HERE, "Cannot read file: " + m_source_filename, ex.what());
     }

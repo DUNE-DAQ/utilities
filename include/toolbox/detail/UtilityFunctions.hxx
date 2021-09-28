@@ -91,12 +91,20 @@ template<typename T>
 std::string
 vec_fmt(const std::vector<T>& vec)
 {
+  if (vec.size() == 0) {
+    return "[]";
+  }
+
   std::ostringstream oss;
   oss << "[";
 
-  for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); it++)
-    oss << *it << ",";
-  oss.seekp(oss.tellp() - 1l);
+  auto it = vec.begin();
+  oss << *it;
+  ++it;
+
+  for (; it != vec.end(); it++)
+    oss << ","<< *it ;
+
   oss << "]";
 
   return oss.str();
@@ -106,20 +114,20 @@ vec_fmt(const std::vector<T>& vec)
 //-----------------------------------------------------------------------------
 template<typename T>
 std::string
-short_vec_fmt(const std::vector<T>& vec)
+short_vec_fmt(const std::vector<T>& sorted_vec)
 {
-  if (vec.size() == 0)
+  if (sorted_vec.size() == 0)
     return "[]";
-  else if (vec.size() == 1)
-    return "[" + boost::lexical_cast<std::string>(vec.at(0)) + "]";
+  else if (sorted_vec.size() == 1)
+    return "[" + boost::lexical_cast<std::string>(sorted_vec.at(0)) + "]";
 
   std::ostringstream oss;
   oss << "[";
 
   // Initial search range
-  T first = vec.at(0);
+  T first = sorted_vec.at(0);
   T last = first;
-  for (typename std::vector<T>::const_iterator it = vec.begin() + 1; it != vec.end(); it++) {
+  for (auto it = sorted_vec.begin() + 1; it != sorted_vec.end(); it++) {
     // if *it is contiguous to last, carry on searching
     if ((*it) == (last + 1)) {
       last = *it;
@@ -140,13 +148,10 @@ short_vec_fmt(const std::vector<T>& vec)
 
   // Process the last range
   if (first == last)
-    oss << first << ",";
+    oss << first;
   else
-    oss << first << "-" << last << ",";
+    oss << first << "-" << last;
 
-  // Is this actually necessary?
-  // Replace final "," with a "]"
-  oss.seekp(oss.tellp() - 1l);
   oss << "]";
 
   return oss.str();

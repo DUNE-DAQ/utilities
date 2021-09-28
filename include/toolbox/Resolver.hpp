@@ -10,7 +10,7 @@
  * received with this code.
  */
 
-#include "ers/Issue.hpp"
+#include "toolbox/Issues.hpp"
 #include "logging/Logging.hpp"
 
 #include <arpa/nameser.h>
@@ -24,18 +24,9 @@
 
 namespace dunedaq {
 
-ERS_DECLARE_ISSUE(toolbox,
-                  ServiceNotFound,
-                  "The service " << service << " was not found in DNS",
-                  ((std::string)service))
-ERS_DECLARE_ISSUE(toolbox,
-                  NameNotFound,
-                  "The hostname " << name << " could not be resolved: " << error,
-                  ((std::string)name)((std::string)error))
-
 namespace toolbox {
 std::vector<std::string>
-GetServiceAddresses(std::string service_name, std::string hostname)
+get_service_addresses(std::string service_name, std::string const& hostname = "")
 {
   std::vector<std::string> output;
   unsigned char query_buffer[1024];

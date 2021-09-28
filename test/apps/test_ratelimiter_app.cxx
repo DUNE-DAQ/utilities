@@ -69,8 +69,9 @@ main(int /*argc*/, char** /*argv[]*/)
 
   // Killswitch that flips the run marker
   auto killswitch = std::thread([&]() {
-    TLOG() << "Application will terminate in 5s...";
+    TLOG() << "Application will terminate in " << runsecs << "s...";
     std::this_thread::sleep_for(std::chrono::seconds(runsecs));
+    TLOG() << "Flipping killswitch in order to stop...";
     marker.store(false);
   });
 
@@ -86,11 +87,17 @@ main(int /*argc*/, char** /*argv[]*/)
   }
 
   // Join local threads
-  TLOG() << "Flipping killswitch in order to stop...";
   if (killswitch.joinable()) {
     killswitch.join();
   }
 
+  if (adjuster.joinable()) {
+    adjuster.join();
+  }
+
+  if (stats.joinable()) {
+    stats.join();
+  }
   // Check
   // TLOG() << "Operations in 5 seconds (should be really close to 5 million:): " << sumops;
 

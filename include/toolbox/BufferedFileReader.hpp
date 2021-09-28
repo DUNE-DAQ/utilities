@@ -99,6 +99,7 @@ public:
     } else if (m_compression_algorithm == "None") {
       TLOG_DEBUG(10) << "Running without compression" << std::endl;
     } else {
+      close();
       throw BufferedReaderWriterConfigurationError(ERS_HERE,
                                                    "Non-recognized compression algorithm: " + m_compression_algorithm);
     }

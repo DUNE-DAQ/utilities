@@ -23,12 +23,16 @@ daq_add_library(UtilityFunctions.cpp LINK_LIBRARIES nlohmann_json::nlohmann_json
 ##############################################################################
 
 # Test applications
-daq_add_application(readout_test_ratelimiter test_ratelimiter_app.cxx TEST LINK_LIBRARIES toolbox)
+daq_add_application(test_ratelimiter_app test_ratelimiter_app.cxx TEST LINK_LIBRARIES toolbox)
 
 ##############################################################################
 
 # Unit tests
 
+daq_add_unit_test(FileSourceBuffer_test           LINK_LIBRARIES logging::logging toolbox)
+daq_add_unit_test(Resolver_test           LINK_LIBRARIES logging::logging toolbox)
+daq_add_unit_test(ReusableThread_test           LINK_LIBRARIES logging::logging toolbox)
 daq_add_unit_test(ThreadHelper_test           LINK_LIBRARIES logging::logging toolbox)
+daq_add_unit_test(UtilityFunctions_test           LINK_LIBRARIES logging::logging toolbox stdc++fs)
 
 daq_install()
