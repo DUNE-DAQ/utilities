@@ -21,7 +21,8 @@
 
 using namespace dunedaq::toolbox;
 
-BOOST_AUTO_TEST_CASE(NoService) {
+BOOST_AUTO_TEST_CASE(NoService)
+{
   auto res = get_service_addresses("NonExistantService");
   BOOST_REQUIRE(res.empty());
 
@@ -29,9 +30,11 @@ BOOST_AUTO_TEST_CASE(NoService) {
   BOOST_REQUIRE(res.empty());
 }
 
-BOOST_AUTO_TEST_CASE(Ldap) {
+BOOST_AUTO_TEST_CASE(Ldap)
+{
   auto res = get_service_addresses("_ldap._tcp");
-  if (res.empty()) return;
+  if (res.empty())
+    return;
 
   BOOST_REQUIRE(res.size() > 0);
 

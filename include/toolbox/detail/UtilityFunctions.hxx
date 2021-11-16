@@ -103,7 +103,7 @@ vec_fmt(const std::vector<T>& vec)
   ++it;
 
   for (; it != vec.end(); it++)
-    oss << ","<< *it ;
+    oss << "," << *it;
 
   oss << "]";
 

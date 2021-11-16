@@ -10,8 +10,8 @@
  * received with this code.
  */
 
-#include "toolbox/Issues.hpp"
 #include "logging/Logging.hpp"
+#include "toolbox/Issues.hpp"
 
 #include <arpa/nameser.h>
 #include <netdb.h>

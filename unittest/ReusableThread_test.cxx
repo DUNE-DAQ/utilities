@@ -28,7 +28,8 @@ test_fun(int input)
   result = input;
 }
 
-BOOST_AUTO_TEST_CASE(Constructors) {
+BOOST_AUTO_TEST_CASE(Constructors)
+{
   auto rt = new ReusableThread(1);
   delete rt;
 }
@@ -41,7 +42,8 @@ BOOST_AUTO_TEST_CASE(CopyAndMoveSemantics)
   BOOST_REQUIRE(!std::is_move_assignable_v<ReusableThread>);
 }
 
-BOOST_AUTO_TEST_CASE(SetWork) {
+BOOST_AUTO_TEST_CASE(SetWork)
+{
   ReusableThread worker(2);
 
   result = 0;
