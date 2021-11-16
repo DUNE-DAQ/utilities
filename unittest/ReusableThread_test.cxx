@@ -31,7 +31,7 @@ test_fun(int input)
 BOOST_AUTO_TEST_CASE(Constructors)
 {
   auto rt = new ReusableThread(1);
-  delete rt;
+  delete rt; // NOLINT(build/raw_ownership)
 }
 
 BOOST_AUTO_TEST_CASE(CopyAndMoveSemantics)

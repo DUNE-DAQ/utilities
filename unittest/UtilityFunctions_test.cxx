@@ -17,6 +17,9 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <list>
+#include <string>
+#include <vector>
 
 using namespace dunedaq;
 
@@ -49,12 +52,12 @@ BOOST_AUTO_TEST_CASE(millisleep_t)
   auto end = std::chrono::steady_clock::now();
   auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
-  BOOST_REQUIRE_CLOSE(double(diff), 500.0, 0.002);
+  BOOST_REQUIRE_CLOSE(static_cast<double>(diff), 500.0, 0.002);
 }
 
-BOOST_AUTO_TEST_CASE(strprintf_t)
+BOOST_AUTO_TEST_CASE(strprintf_t) // NOLINT
 {
-  auto res = strprintf("Printf test  %d %s", 5, "test");
+  auto res = strprintf("Printf test  %d %s", 5, "test"); // NOLINT
   BOOST_REQUIRE_EQUAL(res, "Printf test  5 test");
 }
 
