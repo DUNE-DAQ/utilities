@@ -51,7 +51,6 @@ ERS_DECLARE_ISSUE(toolbox,                             // Namespace
                   "Threading Issue detected: " << err, // Message
                   ((std::string)err))                  // Message parameters
 
-    
 ERS_DECLARE_ISSUE(toolbox,
                   ServiceNotFound,
                   "The service " << service << " was not found in DNS",
