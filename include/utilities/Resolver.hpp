@@ -1,5 +1,5 @@
-#ifndef TOOLBOX_INCLUDE_TOOLBOX_RESOLVER_HPP_
-#define TOOLBOX_INCLUDE_TOOLBOX_RESOLVER_HPP_
+#ifndef UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_
+#define UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_
 
 /**
  *
@@ -11,7 +11,7 @@
  */
 
 #include "logging/Logging.hpp"
-#include "toolbox/Issues.hpp"
+#include "utilities/Issues.hpp"
 
 #include <arpa/nameser.h>
 #include <netdb.h>
@@ -24,7 +24,7 @@
 
 namespace dunedaq {
 
-namespace toolbox {
+namespace utilities {
 std::vector<std::string>
 get_service_addresses(std::string service_name, std::string const& hostname = "")
 {
@@ -76,7 +76,7 @@ get_service_addresses(std::string service_name, std::string const& hostname = ""
   }
   return output;
 }
-} // namespace toolbox
+} // namespace utilities
 } // namespace dunedaq
 
-#endif // TOOLBOX_INCLUDE_TOOLBOX_RESOLVER_HPP_
+#endif // UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_

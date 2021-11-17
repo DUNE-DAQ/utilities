@@ -7,8 +7,8 @@
  * received with this code.
  */
 
-#include "toolbox/Issues.hpp"
-#include "toolbox/ReusableThread.hpp"
+#include "utilities/Issues.hpp"
+#include "utilities/ReusableThread.hpp"
 
 #define BOOST_TEST_MODULE ReusableThread_test // NOLINT
 
@@ -18,7 +18,7 @@
 #include <filesystem>
 #include <fstream>
 
-using namespace dunedaq::toolbox;
+using namespace dunedaq::utilities;
 
 std::atomic<int> result;
 void

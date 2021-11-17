@@ -8,8 +8,8 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#ifndef TOOLBOX_INCLUDE_TOOLBOX_REUSABLETHREAD_HPP_
-#define TOOLBOX_INCLUDE_TOOLBOX_REUSABLETHREAD_HPP_
+#ifndef UTILITIES_INCLUDE_UTILITIES_REUSABLETHREAD_HPP_
+#define UTILITIES_INCLUDE_UTILITIES_REUSABLETHREAD_HPP_
 
 #include <atomic>
 #include <chrono>
@@ -20,7 +20,7 @@
 #include <thread>
 
 namespace dunedaq {
-namespace toolbox {
+namespace utilities {
 
 class ReusableThread
 {
@@ -117,7 +117,7 @@ private:
   }
 };
 
-} // namespace toolbox
+} // namespace utilities
 } // namespace dunedaq
 
-#endif // TOOLBOX_INCLUDE_TOOLBOX_REUSABLETHREAD_HPP_
+#endif // UTILITIES_INCLUDE_UTILITIES_REUSABLETHREAD_HPP_

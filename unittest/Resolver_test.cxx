@@ -7,8 +7,8 @@
  * received with this code.
  */
 
-#include "toolbox/Issues.hpp"
-#include "toolbox/Resolver.hpp"
+#include "utilities/Issues.hpp"
+#include "utilities/Resolver.hpp"
 
 #define BOOST_TEST_MODULE Resolver_test // NOLINT
 
@@ -19,7 +19,7 @@
 #include <fstream>
 #include <regex>
 
-using namespace dunedaq::toolbox;
+using namespace dunedaq::utilities;
 
 BOOST_AUTO_TEST_CASE(NoService)
 {

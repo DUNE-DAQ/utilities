@@ -1,4 +1,4 @@
-# toolbox -- Utility classes for dunedaq
+# utilities -- Utility classes for dunedaq
 
 ## Current Tools
 
