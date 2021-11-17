@@ -15,41 +15,6 @@
 namespace dunedaq {
 
 // Disable coverage collection LCOV_EXCL_START
-ERS_DECLARE_ISSUE(toolbox,
-                  BufferedReaderWriterConfigurationError,
-                  "Configuration Error: " << conferror,
-                  ((std::string)conferror))
-
-ERS_DECLARE_ISSUE(toolbox, GenericConfigurationError, "Configuration Error: " << conferror, ((std::string)conferror))
-
-ERS_DECLARE_ISSUE(toolbox, CannotOpenFile, "Couldn't open binary file: " << filename, ((std::string)filename))
-ERS_DECLARE_ISSUE(toolbox,
-                  BufferedReaderWriterCannotOpenFile,
-                  "Couldn't open file: " << filename,
-                  ((std::string)filename))
-
-ERS_DECLARE_ISSUE(toolbox,                         ///< Namespace
-                  FileNotFound,                    ///< Issue class name
-                  file_path << " does not exist!", ///< Message
-                  ((std::string)file_path)         ///< Message parameters
-)
-ERS_DECLARE_ISSUE(toolbox,                   ///< Namespace
-                  CorruptedFile,             ///< Issue class name
-                  file_path << " corrupted", ///< Message
-                  ((std::string)file_path)   ///< Message parameters
-)
-ERS_DECLARE_ISSUE_BASE(toolbox,                        ///< Namespace
-                       FileIsDirectory,                ///< Issue class name
-                       CorruptedFile,                  ///< Base class of the issue
-                       file_path << " is a directory", ///< Log Message from the issue
-                       ((std::string)file_path),       ///< Base class attributes
-                       ERS_EMPTY                       ///< Attribute of this class
-)
-
-ERS_DECLARE_ISSUE(toolbox,                             // Namespace
-                  ThreadingIssue,                      // Issue Class Name
-                  "Threading Issue detected: " << err, // Message
-                  ((std::string)err))                  // Message parameters
 
 ERS_DECLARE_ISSUE(toolbox,
                   ServiceNotFound,
