@@ -5,7 +5,7 @@ include(CMakeFindDependencyMacro)
 
 find_dependency(nlohmann_json)
 find_dependency(logging)
-find_dependency(Boost COMPONENTS iostreams)
+find_dependency(Boost COMPONENTS iostreams unit_test_framework program_options)
 find_dependency(ers)
 
 
