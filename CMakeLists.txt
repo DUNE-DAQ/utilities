@@ -6,7 +6,8 @@ daq_setup_environment()
 
 find_package(nlohmann_json REQUIRED)
 find_package(logging REQUIRED)
-find_package(Boost COMPONENTS iostreams REQUIRED)
+find_package(Boost COMPONENTS iostreams unit_test_framework program_options REQUIRED)
+find_package(ers REQUIRED)
 
 ##############################################################################
 # Schema
