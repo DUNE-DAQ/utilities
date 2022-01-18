@@ -31,5 +31,6 @@ daq_add_library( LINK_LIBRARIES nlohmann_json::nlohmann_json logging::logging re
 
 daq_add_unit_test(Resolver_test           LINK_LIBRARIES logging::logging utilities)
 daq_add_unit_test(ReusableThread_test           LINK_LIBRARIES logging::logging utilities)
+daq_add_unit_test(WorkerThread_test           LINK_LIBRARIES logging::logging utilities)
 
 daq_install()
