@@ -30,7 +30,7 @@ namespace dunedaq {
 /**
  * @brief An ERS Issue raised when a threading state error occurs
  */
-ERS_DECLARE_ISSUE(utilities,                              // Namespace
+ERS_DECLARE_ISSUE(utilities,                           // Namespace
                   ThreadingIssue,                      // Issue Class Name
                   "Threading Issue detected: " << err, // Message
                   ((std::string)err))                  // Message parameters
