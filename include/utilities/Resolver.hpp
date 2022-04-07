@@ -38,6 +38,11 @@ namespace utilities {
             appendZmqScheme = true;
             name = hostname.substr(6);
         }
+        else if (hostname.find("://") != std::string::npos) {
+            // Probably an inproc:// or other scheme we don't recognize. Return unresolved.
+            output.push_back(hostname);
+            return output;
+        }
         if (name.find(":") != std::string::npos) {
             portstr = name.substr(name.find(":") + 1);
             name = name.substr(0, name.find(":"));
