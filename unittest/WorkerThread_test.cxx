@@ -1,6 +1,6 @@
 /**
  *
- * @file ThreadHelper_test.cxx ThreadHelper class Unit Tests
+ * @file WorkerThread_test.cxx WorkerThread class Unit Tests
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -9,7 +9,7 @@
 
 #include "utilities/WorkerThread.hpp"
 
-#define BOOST_TEST_MODULE ThreadHelper_test // NOLINT
+#define BOOST_TEST_MODULE WorkerThread_test // NOLINT
 
 #include "boost/asio/signal_set.hpp"
 #include "boost/test/unit_test.hpp"
@@ -34,7 +34,7 @@ std::string actual_thread_name;
 void
 print_name(std::atomic<bool>&)
 {
-  // Give ThreadHelper time to set the name
+  // Give WorkerThread time to set the name
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
   char buffer[16];
@@ -61,13 +61,13 @@ BOOST_AUTO_TEST_CASE(sanity_checks)
   BOOST_REQUIRE_NO_THROW(umth_ptr->start_working_thread());
   auto start_time_in_ms =
     std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - starttime).count();
-  BOOST_TEST_MESSAGE("Time to call ThreadHelper::start_working_thread() was " << start_time_in_ms << " ms");
+  BOOST_TEST_MESSAGE("Time to call WorkerThread::start_working_thread() was " << start_time_in_ms << " ms");
 
   starttime = std::chrono::steady_clock::now();
   BOOST_REQUIRE_NO_THROW(umth_ptr->stop_working_thread());
   auto stop_time_in_ms =
     std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - starttime).count();
-  BOOST_TEST_MESSAGE("Time to call ThreadHelper::stop_working_thread() was " << stop_time_in_ms << " ms");
+  BOOST_TEST_MESSAGE("Time to call WorkerThread::stop_working_thread() was " << stop_time_in_ms << " ms");
 }
 
 BOOST_AUTO_TEST_CASE(inappropriate_transitions, *boost::unit_test::depends_on("sanity_checks"))
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(thread_name)
   umth.stop_working_thread();
 
   // Name not changed
-  BOOST_REQUIRE_EQUAL(actual_thread_name, "ThreadHelper_te");
+  BOOST_REQUIRE_EQUAL(actual_thread_name, "WorkerThread_te");
 }
 
 // You'll want this to test case to execute last, for reasons that are obvious
@@ -110,12 +110,12 @@ BOOST_AUTO_TEST_CASE(abort_checks, *boost::unit_test::depends_on("inappropriate_
     dunedaq::utilities::WorkerThread umth(do_something);
   }
   BOOST_TEST(true,
-             "ThreadHelper without having start_working_thread() thread "
+             "WorkerThread without having start_working_thread() thread "
              "called destructs without aborting the program, as expected");
 
   // BOOST_TEST_MESSAGE(
   //     "You should *expect* the program to abort in a moment, since we're "
-  //     "destructing a ThreadHelper instance after calling "
+  //     "destructing a WorkerThread instance after calling "
   //     "start_working_thread() but before calling stop_working_thread_()");
 
   // {
