@@ -21,37 +21,38 @@
 
 using namespace dunedaq::utilities;
 
-BOOST_AUTO_TEST_CASE(HostnameLookup) {
-    auto res = get_ips_from_hostname("127.0.0.1");
-    BOOST_REQUIRE_GE(res.size(), 1);
-    BOOST_REQUIRE_EQUAL(res[0], "127.0.0.1");
+BOOST_AUTO_TEST_CASE(HostnameLookup)
+{
+  auto res = get_ips_from_hostname("127.0.0.1");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE_EQUAL(res[0], "127.0.0.1");
 
-    res = get_ips_from_hostname("127.0.0.1:1234");
-    BOOST_REQUIRE_GE(res.size(), 1);
-    BOOST_REQUIRE_EQUAL(res[0], "127.0.0.1:1234");
+  res = get_ips_from_hostname("127.0.0.1:1234");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE_EQUAL(res[0], "127.0.0.1:1234");
 
-    res = get_ips_from_hostname("127.0.0.1",1234);
-    BOOST_REQUIRE_GE(res.size(), 1);
-    BOOST_REQUIRE_EQUAL(res[0], "127.0.0.1:1234");
+  res = get_ips_from_hostname("127.0.0.1", 1234);
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE_EQUAL(res[0], "127.0.0.1:1234");
 
-    res = get_ips_from_hostname("localhost");
-    BOOST_REQUIRE_GE(res.size(), 1);
-    BOOST_REQUIRE(res[0] == "127.0.0.1" || res[0] == "::1");
+  res = get_ips_from_hostname("localhost");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE(res[0] == "127.0.0.1" || res[0] == "::1");
 
-    res = get_ips_from_hostname("localhost:1234");
-    BOOST_REQUIRE_GE(res.size(), 1);
-    BOOST_REQUIRE(res[0] == "127.0.0.1:1234" || res[0] == "::1:1234");
+  res = get_ips_from_hostname("localhost:1234");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE(res[0] == "127.0.0.1:1234" || res[0] == "::1:1234");
 
-    res = get_ips_from_hostname("localhost", 1234);
-    BOOST_REQUIRE_GE(res.size(), 1);
-    BOOST_REQUIRE(res[0] == "127.0.0.1:1234" || res[0] == "::1:1234");
+  res = get_ips_from_hostname("localhost", 1234);
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE(res[0] == "127.0.0.1:1234" || res[0] == "::1:1234");
 
-    res = get_ips_from_hostname("cern.ch");
-    BOOST_REQUIRE_GT(res.size(), 0);
+  res = get_ips_from_hostname("cern.ch");
+  BOOST_REQUIRE_GT(res.size(), 0);
 
-    res = get_ips_from_hostname("tcp://localhost:1234");
-    BOOST_REQUIRE_GT(res.size(), 0);
-    BOOST_REQUIRE(res[0] == "tcp://127.0.0.1:1234" || res[0] == "tcp://::1:1234");
+  res = get_ips_from_hostname("tcp://localhost:1234");
+  BOOST_REQUIRE_GT(res.size(), 0);
+  BOOST_REQUIRE(res[0] == "tcp://127.0.0.1:1234" || res[0] == "tcp://::1:1234");
 }
 
 BOOST_AUTO_TEST_CASE(NoService)

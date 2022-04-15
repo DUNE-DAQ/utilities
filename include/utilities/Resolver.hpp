@@ -26,65 +26,67 @@ namespace dunedaq {
 
 namespace utilities {
 
-    std::vector<std::string> get_ips_from_hostname(std::string hostname, int port = 0) {
+std::vector<std::string>
+get_ips_from_hostname(std::string hostname, int port = 0)
+{
 
-        // ZMQ URIs are formatted as follows: tcp://{name}:{port}
-        std::vector<std::string> output;
-        std::string name = hostname;
-        std::string portstr = "";
-        bool appendZmqScheme = false;
-        if (port != 0) portstr = std::to_string(port);
-        if (hostname.find("tcp://") == 0) {
-            appendZmqScheme = true;
-            name = hostname.substr(6);
-        }
-        else if (hostname.find("://") != std::string::npos) {
-            // Probably an inproc:// or other scheme we don't recognize. Return unresolved.
-            output.push_back(hostname);
-            return output;
-        }
-        if (name.find(":") != std::string::npos) {
-            portstr = name.substr(name.find(":") + 1);
-            name = name.substr(0, name.find(":"));
-        }
-        TLOG_DEBUG(12) << "Name is " << name << ", port is " << portstr;
+  // ZMQ URIs are formatted as follows: tcp://{name}:{port}
+  std::vector<std::string> output;
+  std::string name = hostname;
+  std::string portstr = "";
+  bool appendZmqScheme = false;
+  if (port != 0)
+    portstr = std::to_string(port);
+  if (hostname.find("tcp://") == 0) {
+    appendZmqScheme = true;
+    name = hostname.substr(6);
+  } else if (hostname.find("://") != std::string::npos) {
+    // Probably an inproc:// or other scheme we don't recognize. Return unresolved.
+    output.push_back(hostname);
+    return output;
+  }
+  if (name.find(":") != std::string::npos) {
+    portstr = name.substr(name.find(":") + 1);
+    name = name.substr(0, name.find(":"));
+  }
+  TLOG_DEBUG(12) << "Name is " << name << ", port is " << portstr;
 
-        struct addrinfo* result;
-        auto s = getaddrinfo(name.c_str(), portstr != "" ? portstr.c_str() : nullptr, nullptr, &result);
+  struct addrinfo* result;
+  auto s = getaddrinfo(name.c_str(), portstr != "" ? portstr.c_str() : nullptr, nullptr, &result);
 
-        if (s != 0) {
-            ers::error(NameNotFound(ERS_HERE, name, std::string(gai_strerror(s))));
-            return output;
-        }
+  if (s != 0) {
+    ers::error(NameNotFound(ERS_HERE, name, std::string(gai_strerror(s))));
+    return output;
+  }
 
-        for (auto rp = result; rp != nullptr; rp = rp->ai_next) {
-            char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-            getnameinfo(rp->ai_addr, rp->ai_addrlen, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
-            auto result = std::string(hbuf);
-            auto portresult = std::string(sbuf);
-            if (portresult != "" && portresult != "0") {
-                result += ":" + portresult;
-            }
-            if (appendZmqScheme) {
-                result = "tcp://" + result;
-            }
-            bool duplicate = false;
-            for (auto& res : output) {
-                if (res == result) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
-                TLOG_DEBUG(13) << "Found address " << result << " for hostname " << hostname;
-                output.push_back(result);
-            }
-        }
-
-        freeaddrinfo(result);
-
-        return output;
+  for (auto rp = result; rp != nullptr; rp = rp->ai_next) {
+    char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+    getnameinfo(rp->ai_addr, rp->ai_addrlen, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
+    auto result = std::string(hbuf);
+    auto portresult = std::string(sbuf);
+    if (portresult != "" && portresult != "0") {
+      result += ":" + portresult;
     }
+    if (appendZmqScheme) {
+      result = "tcp://" + result;
+    }
+    bool duplicate = false;
+    for (auto& res : output) {
+      if (res == result) {
+        duplicate = true;
+        break;
+      }
+    }
+    if (!duplicate) {
+      TLOG_DEBUG(13) << "Found address " << result << " for hostname " << hostname;
+      output.push_back(result);
+    }
+  }
+
+  freeaddrinfo(result);
+
+  return output;
+}
 
 std::vector<std::string>
 get_service_addresses(std::string service_name, std::string const& hostname = "")
@@ -120,7 +122,7 @@ get_service_addresses(std::string service_name, std::string const& hostname = ""
     auto port = ntohs(*((unsigned short*)ns_rr_rdata(rr) + 2)); // NOLINT(runtime/int)
     auto ips = get_ips_from_hostname(name, port);
     for (auto& ip : ips) {
-        output.push_back(ip);
+      output.push_back(ip);
     }
   }
   return output;
