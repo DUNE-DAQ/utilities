@@ -27,7 +27,7 @@ namespace dunedaq {
 namespace utilities {
 
 std::vector<std::string>
-get_ips_from_hostname(std::string hostname, int port = 0);
+get_ips_from_hostname(std::string hostname);
 
 std::vector<std::string>
 resolve_uri_hostname(std::string uri);

@@ -10,25 +10,17 @@
 #include "utilities/Resolver.hpp"
 
 std::vector<std::string>
-dunedaq::utilities::get_ips_from_hostname(std::string hostname, int port)
+dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 {
   std::vector<std::string> output;
-  std::string name = hostname;
-  std::string portstr = "";
-  if (port != 0)
-    portstr = std::to_string(port);
 
-  if (name.find(":") != std::string::npos) {
-    portstr = name.substr(name.find(":") + 1);
-    name = name.substr(0, name.find(":"));
-  }
-  TLOG_DEBUG(12) << "Name is " << name << ", port is " << portstr;
+  TLOG_DEBUG(12) << "Name is " << hostname;
 
   struct addrinfo* result;
-  auto s = getaddrinfo(name.c_str(), portstr != "" ? portstr.c_str() : nullptr, nullptr, &result);
+  auto s = getaddrinfo(hostname.c_str(), nullptr, nullptr, &result);
 
   if (s != 0) {
-    ers::error(NameNotFound(ERS_HERE, name, std::string(gai_strerror(s))));
+    ers::error(NameNotFound(ERS_HERE, hostname, std::string(gai_strerror(s))));
     return output;
   }
 
@@ -36,10 +28,6 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname, int port)
     char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
     getnameinfo(rp->ai_addr, rp->ai_addrlen, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
     auto result = std::string(hbuf);
-    auto portresult = std::string(sbuf);
-    if (portresult != "" && portresult != "0") {
-      result += ":" + portresult;
-    }
     bool duplicate = false;
     for (auto& res : output) {
       if (res == result) {
@@ -76,10 +64,15 @@ dunedaq::utilities::resolve_uri_hostname(std::string uri)
     return std::vector<std::string>{uri};
   }
 
+  if (name.find(":") != std::string::npos) {
+    portstr = name.substr(name.find(":") + 1);
+    name = name.substr(0, name.find(":"));
+  }
+
   auto output = get_ips_from_hostname(name);
 
   for (size_t ii = 0; ii < output.size(); ++ii) {
-    output[ii] = "tcp://" + output[ii];
+    output[ii] = "tcp://" + output[ii] + ":" + portstr;
   }
 
   return output;
@@ -117,9 +110,10 @@ dunedaq::utilities::get_service_addresses(std::string service_name, std::string 
     dn_expand(ns_msg_base(nsMsg), ns_msg_end(nsMsg), ns_rr_rdata(rr) + 6, name, sizeof(name));
 
     auto port = ntohs(*((unsigned short*)ns_rr_rdata(rr) + 2)); // NOLINT(runtime/int)
-    auto ips = get_ips_from_hostname(name, port);
+    
+    auto ips = get_ips_from_hostname(name);
     for (auto& ip : ips) {
-      output.push_back(ip);
+      output.push_back(ip + ":" + std::to_string(port));
     }
   }
   return output;
