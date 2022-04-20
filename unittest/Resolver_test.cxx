@@ -50,8 +50,24 @@ BOOST_AUTO_TEST_CASE(HostnameLookup) {
     BOOST_REQUIRE_GT(res.size(), 0);
 
     res = get_ips_from_hostname("tcp://localhost:1234");
-    BOOST_REQUIRE_GT(res.size(), 0);
-    BOOST_REQUIRE(res[0] == "tcp://127.0.0.1:1234" || res[0] == "tcp://::1:1234");
+    BOOST_REQUIRE_EQUAL(res.size(), 0);
+}
+
+BOOST_AUTO_TEST_CASE(UriLookup)
+{
+  auto res = resolve_uri_hostname("tcp://127.0.0.1:1234");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE(res[0] == "tcp://127.0.0.1:1234");
+
+  res = resolve_uri_hostname("tcp://localhost:1234");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE(res[0] == "tcp://127.0.0.1:1234" || res[0] == "tcp://::1:1234");
+
+  res = resolve_uri_hostname("inproc://foo");
+  BOOST_REQUIRE_GE(res.size(), 1);
+  BOOST_REQUIRE(res[0] == "inproc://foo");
+
+  BOOST_REQUIRE_EXCEPTION(res = resolve_uri_hostname("blah"), InvalidUri, [](InvalidUri const&) { return true; });
 }
 
 BOOST_AUTO_TEST_CASE(NoService)

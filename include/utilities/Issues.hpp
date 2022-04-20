@@ -24,6 +24,10 @@ ERS_DECLARE_ISSUE(utilities,
                   NameNotFound,
                   "The hostname " << name << " could not be resolved: " << error,
                   ((std::string)name)((std::string)error))
+ERS_DECLARE_ISSUE(utilities,
+                  InvalidUri,
+                  "The URI string " << uri << " is not valid",
+                  ((std::string)uri))
 // Reenable coverage collection LCOV_EXCL_STOP
 } // namespace dunedaq
 

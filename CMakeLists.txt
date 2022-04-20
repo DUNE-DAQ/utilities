@@ -19,7 +19,7 @@ find_package(ers REQUIRED)
 
 # We don't have a real library, but we want to create a target for
 # dependents to be able to depend on
-daq_add_library( LINK_LIBRARIES nlohmann_json::nlohmann_json logging::logging resolv)
+daq_add_library(*.cpp LINK_LIBRARIES nlohmann_json::nlohmann_json logging::logging resolv)
 
 ##############################################################################
 
