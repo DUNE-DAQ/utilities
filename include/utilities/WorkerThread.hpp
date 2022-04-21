@@ -80,58 +80,20 @@ public:
    *
    * This constructor sets the defaults for the thread control variables
    */
-  explicit WorkerThread(std::function<void(std::atomic<bool>&)> do_work)
-    : m_thread_running(false)
-    , m_working_thread(nullptr)
-    , m_do_work(do_work)
-  {}
+  explicit WorkerThread(std::function<void(std::atomic<bool>&)> do_work);
 
   /**
    * @brief Start the working thread (which executes the do_work() function)
    * @throws ThreadingIssue if the thread is already running
    */
-  void start_working_thread(const std::string& name = "noname")
-  {
-    if (thread_running()) {
-      throw ThreadingIssue(ERS_HERE,
-                           "Attempted to start working thread "
-                           "when it is already running!");
-    }
-    m_thread_running = true;
-    m_working_thread.reset(new std::thread([&] { m_do_work(std::ref(m_thread_running)); }));
-    auto handle = m_working_thread->native_handle();
-    auto rc = pthread_setname_np(handle, name.c_str());
-    if (rc != 0) {
-      std::ostringstream s;
-      s << "The name " << name << " provided for the thread is too long.";
-      ers::warning(ThreadingIssue(ERS_HERE, s.str()));
-    }
-  }
+  void start_working_thread(const std::string& name = "noname");
   /**
    * @brief Stop the working thread
    * @throws ThreadingIssue If the thread has not yet been started
    * @throws ThreadingIssue If the thread is not in the joinable state
    * @throws ThreadingIssue If an exception occurs during thread join
    */
-  void stop_working_thread()
-  {
-    if (!thread_running()) {
-      throw ThreadingIssue(ERS_HERE,
-                           "Attempted to stop working thread "
-                           "when it is not running!");
-    }
-    m_thread_running = false;
-
-    if (m_working_thread->joinable()) {
-      try {
-        m_working_thread->join();
-      } catch (std::system_error const& e) {
-        throw ThreadingIssue(ERS_HERE, std::string("Error while joining thread, ") + e.what());
-      }
-    } else {
-      throw ThreadingIssue(ERS_HERE, "Thread not in joinable state during working thread stop!");
-    }
-  }
+  void stop_working_thread();
 
   /**
    * @brief Determine if the thread is currently running
