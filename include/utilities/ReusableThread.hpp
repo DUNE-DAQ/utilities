@@ -25,27 +25,9 @@ namespace utilities {
 class ReusableThread
 {
 public:
-  explicit ReusableThread(int threadid)
-    : m_thread_id(threadid)
-    , m_task_executed(true)
-    , m_task_assigned(false)
-    , m_thread_quit(false)
-    , m_worker_done(false)
-    , m_thread(&ReusableThread::thread_worker, this)
-  {}
+  explicit ReusableThread(int threadid);
 
-  ~ReusableThread()
-  {
-    while (m_task_assigned) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    m_thread_quit = true;
-    while (!m_worker_done) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-      m_cv.notify_all();
-    }
-    m_thread.join();
-  }
+  ~ReusableThread();
 
   ReusableThread(const ReusableThread&) = delete;            ///< ReusableThread is not copy-constructible
   ReusableThread& operator=(const ReusableThread&) = delete; ///< ReusableThread is not copy-assginable
@@ -59,14 +41,7 @@ public:
   int get_thread_id() const { return m_thread_id; }
 
   // Set name for pthread handle
-  void set_name(const std::string& name, int tid)
-  {
-    set_thread_id(tid);
-    char tname[16];
-    snprintf(tname, 16, "%s-%d", name.c_str(), tid); // NOLINT
-    auto handle = m_thread.native_handle();
-    pthread_setname_np(handle, tname);
-  }
+  void set_name(const std::string& name, int tid);
 
   // Check for completed task execution
   bool get_readiness() const { return m_task_executed; }
@@ -99,22 +74,7 @@ private:
   std::thread m_thread;
 
   // Actual worker thread
-  void thread_worker()
-  {
-    std::unique_lock<std::mutex> lock(m_mtx);
-
-    while (!m_thread_quit) {
-      if (!m_task_executed && m_task_assigned) {
-        m_task();
-        m_task_executed = true;
-        m_task_assigned = false;
-      } else {
-        m_cv.wait(lock);
-      }
-    }
-
-    m_worker_done = true;
-  }
+  void thread_worker();
 };
 
 } // namespace utilities
