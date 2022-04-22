@@ -61,7 +61,7 @@ dunedaq::utilities::resolve_uri_hostname(std::string uri)
     name = uri.substr(6);
   } else {
     // Probably an inproc:// or other scheme we don't recognize. Return unresolved.
-    return std::vector<std::string>{uri};
+    return std::vector<std::string>{ uri };
   }
 
   if (name.find(":") != std::string::npos) {
@@ -110,7 +110,7 @@ dunedaq::utilities::get_service_addresses(std::string service_name, std::string 
     dn_expand(ns_msg_base(nsMsg), ns_msg_end(nsMsg), ns_rr_rdata(rr) + 6, name, sizeof(name));
 
     auto port = ntohs(*((unsigned short*)ns_rr_rdata(rr) + 2)); // NOLINT(runtime/int)
-    
+
     auto ips = get_ips_from_hostname(name);
     for (auto& ip : ips) {
       output.push_back(ip + ":" + std::to_string(port));
