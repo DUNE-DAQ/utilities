@@ -26,6 +26,7 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 
   for (auto rp = result; rp != nullptr; rp = rp->ai_next) {
     char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+    if (rp->ai_family == AF_INET6) continue;
     getnameinfo(rp->ai_addr, rp->ai_addrlen, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
     auto result = std::string(hbuf);
     bool duplicate = false;
