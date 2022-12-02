@@ -15,6 +15,8 @@
 
 #include "utilities/WorkerThread.hpp"
 
+#include <string>
+
 dunedaq::utilities::WorkerThread::WorkerThread(std::function<void(std::atomic<bool>&)> do_work)
   : m_thread_running(false)
   , m_working_thread(nullptr)

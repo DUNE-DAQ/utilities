@@ -11,6 +11,8 @@
 
 #include "utilities/ReusableThread.hpp"
 
+#include <string>
+
 dunedaq::utilities::ReusableThread::ReusableThread(int threadid)
   : m_thread_id(threadid)
   , m_task_executed(true)

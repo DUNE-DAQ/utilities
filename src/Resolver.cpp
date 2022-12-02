@@ -9,6 +9,9 @@
 
 #include "utilities/Resolver.hpp"
 
+#include <string>
+#include <vector>
+
 std::vector<std::string>
 dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 {
