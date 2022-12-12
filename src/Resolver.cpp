@@ -28,7 +28,8 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
     char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
     // Let's skip all the IPv6 here
-    if (rp->ai_family == AF_INET6) continue;
+    if (rp->ai_family == AF_INET6)
+      continue;
 
     getnameinfo(rp->ai_addr, rp->ai_addrlen, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
     auto result = std::string(hbuf);
