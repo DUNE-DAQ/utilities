@@ -49,8 +49,7 @@ public:
    */
   explicit NamedObject(const std::string& name)
     : m_name(name)
-  {
-  }
+  {}
 
   NamedObject(NamedObject const&) = delete;            ///< NamedObject is not copy-constructible
   NamedObject(NamedObject&&) = default;                ///< NamedObject is move-constructible

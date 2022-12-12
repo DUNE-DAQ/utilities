@@ -19,8 +19,7 @@ dunedaq::utilities::WorkerThread::WorkerThread(std::function<void(std::atomic<bo
   : m_thread_running(false)
   , m_working_thread(nullptr)
   , m_do_work(do_work)
-{
-}
+{}
 
 void
 dunedaq::utilities::WorkerThread::start_working_thread(const std::string& name)
