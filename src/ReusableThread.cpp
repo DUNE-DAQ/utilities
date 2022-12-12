@@ -18,8 +18,7 @@ dunedaq::utilities::ReusableThread::ReusableThread(int threadid)
   , m_thread_quit(false)
   , m_worker_done(false)
   , m_thread(&ReusableThread::thread_worker, this)
-{
-}
+{}
 
 dunedaq::utilities::ReusableThread::~ReusableThread()
 {
