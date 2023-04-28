@@ -30,10 +30,25 @@ std::vector<std::string>
 get_ips_from_hostname(std::string hostname);
 
 std::vector<std::string>
-resolve_uri_hostname(std::string uri);
+resolve_uri_hostname(std::string connection_string);
 
 std::vector<std::string>
 get_service_addresses(std::string service_name, std::string const& hostname = "");
+
+struct ZmqUri {
+  std::string scheme{""};
+  std::string host{""};
+  std::string port{""};
+  std::string to_string()
+  {
+    auto tmp = scheme + "://" + host;
+    if (port != "")
+      return tmp + ":" + port;
+  return tmp;
+  }
+};
+ZmqUri
+parse_connection_string(std::string connection_string);
 
 } // namespace utilities
 } // namespace dunedaq

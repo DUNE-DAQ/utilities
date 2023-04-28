@@ -28,7 +28,8 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
     char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
     // Let's skip all the IPv6 here
-    if (rp->ai_family == AF_INET6) continue;
+    if (rp->ai_family == AF_INET6)
+      continue;
 
     getnameinfo(rp->ai_addr, rp->ai_addrlen, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
     auto result = std::string(hbuf);
@@ -51,35 +52,20 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 }
 
 std::vector<std::string>
-dunedaq::utilities::resolve_uri_hostname(std::string uri)
+dunedaq::utilities::resolve_uri_hostname(std::string connection_string)
 {
-  // ZMQ URIs are formatted as follows: tcp://{name}:{port}
-  std::string name = uri;
-  std::string portstr = "";
+  auto uri = parse_connection_string(connection_string);
 
-  if (uri.find("://") == std::string::npos) {
-    throw InvalidUri(ERS_HERE, uri);
-  }
-
-  if (uri.find("tcp://") == 0) {
-    name = uri.substr(6);
-  } else {
-    // Probably an inproc:// or other scheme we don't recognize. Return unresolved.
-    return std::vector<std::string>{ uri };
-  }
-
-  if (name.find(":") != std::string::npos) {
-    portstr = name.substr(name.find(":") + 1);
-    name = name.substr(0, name.find(":"));
-  }
-
-  auto output = get_ips_from_hostname(name);
+  if(uri.scheme == "tcp") {
+  auto output = get_ips_from_hostname(uri.host);
 
   for (size_t ii = 0; ii < output.size(); ++ii) {
-    output[ii] = "tcp://" + output[ii] + ":" + portstr;
+    output[ii] = "tcp://" + output[ii] + ":" + uri.port;
   }
-
   return output;
+  } else {
+  return { connection_string }; 
+  }
 }
 
 std::vector<std::string>
@@ -120,5 +106,27 @@ dunedaq::utilities::get_service_addresses(std::string service_name, std::string 
       output.push_back(ip + ":" + std::to_string(port));
     }
   }
+  return output;
+}
+
+dunedaq::utilities::ZmqUri
+dunedaq::utilities::parse_connection_string(std::string connection_string)
+{
+  // ZMQ URIs are formatted as follows: tcp://{host}:{port}
+  ZmqUri output;
+
+  if (connection_string.find("://") == std::string::npos) {
+    throw InvalidUri(ERS_HERE, connection_string);
+  }
+
+  output.scheme = connection_string.substr(0, connection_string.find("://"));
+  connection_string = connection_string.substr(connection_string.find("://") + 3);
+
+  if (connection_string.find(":") != std::string::npos) {
+    output.port = connection_string.substr(connection_string.find(":") + 1);
+    connection_string = connection_string.substr(0, connection_string.find(":"));
+  }
+  output.host = connection_string;
+
   return output;
 }
