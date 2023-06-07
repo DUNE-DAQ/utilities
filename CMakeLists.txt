@@ -34,4 +34,6 @@ daq_add_unit_test(ReusableThread_test           LINK_LIBRARIES logging::logging 
 daq_add_unit_test(WorkerThread_test           LINK_LIBRARIES logging::logging utilities)
 daq_add_unit_test(NamedObject_test        )
 
+daq_add_application(resolve_hostname resolve_hostname.cpp TEST LINK_LIBRARIES utilities)
+
 daq_install()
