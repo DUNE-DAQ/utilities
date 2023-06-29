@@ -12,6 +12,10 @@
 
 #include <string>
 
+#define TLVL_TIME_SYNC_PROPERTIES 17
+#define TLVL_TIME_SYNC_NOTES 18
+#define TLVL_TIME_SYNC_NEW_ESTIMATE 19
+
 namespace dunedaq {
 
 // Disable coverage collection LCOV_EXCL_START
@@ -26,6 +30,23 @@ ERS_DECLARE_ISSUE(utilities,
                   ((std::string)name)((std::string)error))
 ERS_DECLARE_ISSUE(utilities, InvalidUri, "The URI string " << uri << " is not valid", ((std::string)uri))
 // Reenable coverage collection LCOV_EXCL_STOP
+
+ERS_DECLARE_ISSUE(utilities, InvalidTimeSync, "An invalid TimeSync message was received", ERS_EMPTY)
+
+ERS_DECLARE_ISSUE(utilities,
+                  EarlyTimeSync,
+                  "The most recent TimeSync message is ahead of current system time by " << time_diff << " us.",
+                  ((uint64_t)time_diff)) // NOLINT
+
+ERS_DECLARE_ISSUE(utilities,
+                  LateTimeSync,
+                  "The most recent TimeSync message is behind current system time by " << time_diff << " us.",
+                  ((uint64_t)time_diff)) // NOLINT
+
+ERS_DECLARE_ISSUE(utilities,
+                  FailedToGetTimestampEstimate,
+                  "Failed to get timestamp estimate (was interrupted)",
+                  ERS_EMPTY)
 } // namespace dunedaq
 
 #endif // UTILITIES_INCLUDE_UTILITIES_ISSUES_HPP_
