@@ -9,8 +9,6 @@
 #ifndef UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORBASE_HPP_
 #define UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORBASE_HPP_
 
-#include "daqdataformats/Types.hpp"
-
 #include <atomic>
 
 namespace dunedaq {
@@ -25,7 +23,7 @@ class TimestampEstimatorBase
 {
 public:
   virtual ~TimestampEstimatorBase() = default;
-  virtual daqdataformats::timestamp_t get_timestamp_estimate() const = 0;
+  virtual uint64_t get_timestamp_estimate() const = 0;
 
   enum WaitStatus
   {
@@ -48,7 +46,7 @@ public:
 
      Returns kFinished if the timestamp became valid, or kInterrupted if continue_flag became false first
   */
-  WaitStatus wait_for_timestamp(daqdataformats::timestamp_t ts, std::atomic<bool>& continue_flag);
+  WaitStatus wait_for_timestamp(uint64_t ts, std::atomic<bool>& continue_flag);
 };
 
 } // namespace utilities

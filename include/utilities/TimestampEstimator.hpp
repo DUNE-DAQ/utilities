@@ -12,8 +12,6 @@
 #include "utilities/TimestampEstimatorBase.hpp"
 #include "utilities/Issues.hpp"
 
-#include "utilities/TimeSync.hpp"
-#include "daqdataformats/Types.hpp"
 #include "utilities/WorkerThread.hpp"
 
 #include <atomic>
@@ -32,33 +30,37 @@ namespace utilities {
 class TimestampEstimator : public TimestampEstimatorBase
 {
 public:
-  TimestampEstimator(daqdataformats::run_number_t run_number, uint64_t clock_frequency_hz);
+  TimestampEstimator(uint32_t run_number, uint64_t clock_frequency_hz);
 
   explicit TimestampEstimator(uint64_t clock_frequency_hz); // NOLINT(build/unsigned)
 
   virtual ~TimestampEstimator();
 
-  daqdataformats::timestamp_t get_timestamp_estimate() const override { return m_current_timestamp_estimate.load(); }
+  uint64_t get_timestamp_estimate() const override { return m_current_timestamp_estimate.load(); }
 
-  void add_timestamp_datapoint(const utilities::TimeSync& ts);
+  void add_timestamp_datapoint(uint64_t daq_time, uint64_t system_time);
 
-  void timesync_callback(utilities::TimeSync& tsync);
+  template <class T>
+  void timesync_callback(T& tsync);
 
   uint64_t get_received_timesync_count() { return m_received_timesync_count.load(); }
 private:
   void estimator_thread_fn(std::atomic<bool>& running_flag);
 
   // The estimate of the current timestamp
-  std::atomic<daqdataformats::timestamp_t> m_current_timestamp_estimate{ daqdataformats::TypeDefaults::s_invalid_timestamp };
+  std::atomic<uint64_t> m_current_timestamp_estimate;
 
   uint64_t m_clock_frequency_hz; // NOLINT(build/unsigned)
-  utilities::TimeSync m_most_recent_timesync;
+  uint64_t m_most_recent_daq_time;
+  uint64_t m_most_recent_system_time;
   std::mutex m_datapoint_mutex;
-  daqdataformats::run_number_t m_run_number {0};
+  uint32_t m_run_number {0};
   std::atomic<uint64_t> m_received_timesync_count; // NOLINT(build/unsigned)
 };
 
 } // namespace utilities
 } // namespace dunedaq
+
+#include "detail/TimestampEstimator.hxx"
 
 #endif // UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATOR_HPP_

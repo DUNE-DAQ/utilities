@@ -18,7 +18,7 @@ TimestampEstimatorBase::wait_for_valid_timestamp(std::atomic<bool>& continue_fla
   if (!continue_flag.load())
     return TimestampEstimatorBase::kInterrupted;
 
-  while (continue_flag.load() && get_timestamp_estimate() == daqdataformats::TypeDefaults::s_invalid_timestamp) {
+  while (continue_flag.load() && get_timestamp_estimate() == std::numeric_limits<uint64_t>::max()) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     if (!continue_flag.load())
       return TimestampEstimatorBase::kInterrupted;
@@ -28,13 +28,13 @@ TimestampEstimatorBase::wait_for_valid_timestamp(std::atomic<bool>& continue_fla
 }
 
 TimestampEstimatorBase::WaitStatus
-TimestampEstimatorBase::wait_for_timestamp(daqdataformats::timestamp_t ts, std::atomic<bool>& continue_flag)
+TimestampEstimatorBase::wait_for_timestamp(uint64_t ts, std::atomic<bool>& continue_flag)
 {
   if (!continue_flag.load())
     return TimestampEstimatorBase::kInterrupted;
 
   while (continue_flag.load() &&
-         (get_timestamp_estimate() < ts || get_timestamp_estimate() == daqdataformats::TypeDefaults::s_invalid_timestamp)) {
+         (get_timestamp_estimate() < ts || get_timestamp_estimate() == std::numeric_limits<uint64_t>::max())) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     if (!continue_flag.load())
       return TimestampEstimatorBase::kInterrupted;

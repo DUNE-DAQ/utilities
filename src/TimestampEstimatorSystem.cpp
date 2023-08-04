@@ -22,7 +22,7 @@ TimestampEstimatorSystem::TimestampEstimatorSystem(uint64_t clock_frequency_hz) 
                 << " clock_frequency_hz/1000000.=" << (m_clock_frequency_hz / 1000000.);
 }
 
-daqdataformats::timestamp_t
+uint64_t
 TimestampEstimatorSystem::get_timestamp_estimate() const
 {
   auto now = std::chrono::system_clock::now().time_since_epoch();

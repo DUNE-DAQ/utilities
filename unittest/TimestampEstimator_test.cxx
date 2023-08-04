@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE(Basics)
 {
   using namespace std::chrono_literals;
   auto queue_ref = iomanager::ConnectionRef{ "queue", "dummy" };
-  auto sink =  get_iom_sender<utilities::TimeSync>(queue_ref);
-  auto source = get_iom_receiver<utilities::TimeSync>(queue_ref);
+  auto sink =  get_iom_sender<dfmessages::TimeSync>(queue_ref);
+  auto source = get_iom_receiver<dfmessages::TimeSync>(queue_ref);
 
   const uint64_t clock_frequency_hz = 62'500'000; // NOLINT(build/unsigned)
 
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(Basics)
 
   std::atomic<bool> continue_flag{ true };
   daqdataformats::timestamp_t initial_ts = 1;
-  utilities::TimeSync initial_time_sync(initial_ts);
+  dfmessages::TimeSync initial_time_sync(initial_ts);
   sink->send(std::move(initial_time_sync), 10ms);
   BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(continue_flag), utilities::TimestampEstimatorBase::kFinished);
 

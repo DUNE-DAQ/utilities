@@ -24,7 +24,7 @@ class TimestampEstimatorSystem : public TimestampEstimatorBase
 public:
   explicit TimestampEstimatorSystem(uint64_t clock_frequency_hz); // NOLINT(build/unsigned)
 
-  daqdataformats::timestamp_t get_timestamp_estimate() const override;
+  uint64_t get_timestamp_estimate() const override;
 
 private:
   uint64_t m_clock_frequency_hz; // NOLINT(build/unsigned)
