@@ -12,12 +12,9 @@
 #include "utilities/TimestampEstimatorBase.hpp"
 #include "utilities/Issues.hpp"
 
-#include "utilities/WorkerThread.hpp"
-
 #include <atomic>
 #include <memory>
 #include <mutex>
-#include <thread>
 
 namespace dunedaq {
 namespace utilities {
@@ -45,7 +42,6 @@ public:
 
   uint64_t get_received_timesync_count() { return m_received_timesync_count.load(); }
 private:
-  void estimator_thread_fn(std::atomic<bool>& running_flag);
 
   // The estimate of the current timestamp
   std::atomic<uint64_t> m_current_timestamp_estimate;
