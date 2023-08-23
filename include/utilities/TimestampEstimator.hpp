@@ -38,12 +38,11 @@ public:
   void add_timestamp_datapoint(uint64_t daq_time, uint64_t system_time);
 
   template <class T>
-  void timesync_callback(T& tsync);
+  void timesync_callback(const T& tsync);
 
-  uint64_t get_received_timesync_count() { return m_received_timesync_count.load(); }
+  uint64_t get_received_timesync_count() const { return m_received_timesync_count.load(); }
 private:
 
-  // The estimate of the current timestamp
   std::atomic<uint64_t> m_current_timestamp_estimate;
 
   uint64_t m_clock_frequency_hz; // NOLINT(build/unsigned)

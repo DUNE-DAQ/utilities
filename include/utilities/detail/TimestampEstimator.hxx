@@ -4,7 +4,7 @@ namespace dunedaq {
 namespace utilities {
 
 template <class T>
-void TimestampEstimator::timesync_callback(T& tsync)
+void TimestampEstimator::timesync_callback(const T& tsync)
 {
   ++m_received_timesync_count;
   TLOG_DEBUG(TLVL_TIME_SYNC_PROPERTIES) << "Got a TimeSync run=" << tsync.run_number << " local run=" << m_run_number 

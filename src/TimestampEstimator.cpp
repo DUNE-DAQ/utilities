@@ -58,7 +58,7 @@ TimestampEstimator::add_timestamp_datapoint(uint64_t daq_time, uint64_t system_t
   if (m_most_recent_daq_time != std::numeric_limits<uint64_t>::max()) {
     // Update the current timestamp estimate, based on the most recently-read TimeSync
     using namespace std::chrono;
-    // std::chrono is the worst
+
     auto time_now =
       static_cast<uint64_t>(duration_cast<microseconds>(system_clock::now().time_since_epoch()).count()); // NOLINT
 
