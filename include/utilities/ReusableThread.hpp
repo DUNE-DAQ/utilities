@@ -43,6 +43,9 @@ public:
   // Set name for pthread handle
   void set_name(const std::string& name, int tid);
 
+  // Pin thread to CPU
+  void set_pin(int cpuid);
+
   // Check for completed task execution
   bool get_readiness() const { return m_task_executed; }
 
@@ -66,6 +69,7 @@ private:
   std::atomic<bool> m_task_assigned;
   std::atomic<bool> m_thread_quit;
   std::atomic<bool> m_worker_done;
+  std::atomic<bool> m_named;
   std::function<void()> m_task;
 
   // Locks
