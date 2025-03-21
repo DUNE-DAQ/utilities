@@ -10,6 +10,7 @@
 #define UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORBASE_HPP_
 
 #include <atomic>
+#include <chrono>
 
 namespace dunedaq {
 namespace utilities {
@@ -24,6 +25,7 @@ class TimestampEstimatorBase
 public:
   virtual ~TimestampEstimatorBase() = default;
   virtual uint64_t get_timestamp_estimate() const = 0;
+  virtual std::chrono::microseconds get_wait_estimate(uint64_t ts) const = 0;
 
   enum WaitStatus
   {

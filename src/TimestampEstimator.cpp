@@ -54,6 +54,13 @@ TimestampEstimator::get_timestamp_estimate() const {
 
 }
 
+std::chrono::microseconds
+TimestampEstimator::get_wait_estimate(uint64_t ts) const
+{
+  auto now = get_timestamp_estimate();
+  auto diff = ts - now;
+  return std::chrono::microseconds(static_cast<long>(diff * 1000000. / m_clock_frequency_hz));
+}
 
 
 void

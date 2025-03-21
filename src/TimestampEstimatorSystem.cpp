@@ -30,5 +30,15 @@ TimestampEstimatorSystem::get_timestamp_estimate() const
   return (m_clock_frequency_hz / 1000000.) * now_us.count();
 }
 
+std::chrono::microseconds
+TimestampEstimatorSystem::get_wait_estimate(uint64_t ts) const
+{
+  auto now = std::chrono::system_clock::now().time_since_epoch();
+  auto now_us = std::chrono::duration_cast<std::chrono::microseconds>(now);
+  auto then = static_cast<long>(ts * 1000000. / m_clock_frequency_hz);
+  auto then_us = std::chrono::microseconds(then);
+  return then_us - now_us;
+}
+
 } // namespace utilities
 } // namespace dunedaq
