@@ -68,47 +68,6 @@ dunedaq::utilities::resolve_uri_hostname(std::string connection_string)
   }
 }
 
-std::vector<std::string>
-dunedaq::utilities::get_service_addresses(std::string service_name, std::string const& hostname)
-{
-  std::vector<std::string> output;
-  unsigned char query_buffer[1024];
-
-  // Check if we're given a "bare" service name, convert to DNS service name, assuming TCP
-  if (std::count(service_name.begin(), service_name.end(), '.') == 0) {
-    service_name = "_" + service_name + "._tcp";
-
-    if (!hostname.empty()) {
-      service_name += "." + hostname;
-    }
-  }
-
-  auto response = res_search(service_name.c_str(), C_IN, ns_t_srv, query_buffer, sizeof(query_buffer));
-  if (response < 0) {
-    ers::error(ServiceNotFound(ERS_HERE, service_name));
-    return output;
-  }
-
-  ns_msg nsMsg;
-  ns_initparse(query_buffer, response, &nsMsg);
-
-  for (int x = 0; x < ns_msg_count(nsMsg, ns_s_an); x++) {
-    ns_rr rr;
-    ns_parserr(&nsMsg, ns_s_an, x, &rr);
-
-    char name[1024];
-    dn_expand(ns_msg_base(nsMsg), ns_msg_end(nsMsg), ns_rr_rdata(rr) + 6, name, sizeof(name));
-
-    auto port = ntohs(*((unsigned short*)ns_rr_rdata(rr) + 2)); // NOLINT(runtime/int)
-
-    auto ips = get_ips_from_hostname(name);
-    for (auto& ip : ips) {
-      output.push_back(ip + ":" + std::to_string(port));
-    }
-  }
-  return output;
-}
-
 dunedaq::utilities::ZmqUri
 dunedaq::utilities::parse_connection_string(std::string connection_string)
 {

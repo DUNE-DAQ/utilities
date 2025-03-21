@@ -32,9 +32,6 @@ get_ips_from_hostname(std::string hostname);
 std::vector<std::string>
 resolve_uri_hostname(std::string connection_string);
 
-std::vector<std::string>
-get_service_addresses(std::string service_name, std::string const& hostname = "");
-
 struct ZmqUri {
   std::string scheme{""};
   std::string host{""};

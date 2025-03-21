@@ -69,30 +69,3 @@ BOOST_AUTO_TEST_CASE(UriLookup)
   TLOG() << "Test UriLookup END";
 }
 
-BOOST_AUTO_TEST_CASE(NoService)
-{
-  TLOG() << "Test NoService BEGIN";
-  auto res = get_service_addresses("NonExistantService");
-  BOOST_REQUIRE(res.empty());
-
-  res = get_service_addresses("NonExistantService", "NonExistantHost");
-  BOOST_REQUIRE(res.empty());
-  TLOG() << "Test NoService END";
-}
-
-BOOST_AUTO_TEST_CASE(Ldap)
-{
-  TLOG() << "Test Ldap BEGIN";
-  auto res = get_service_addresses("_ldap._tcp");
-  if (res.empty())
-    return;
-
-  BOOST_REQUIRE(res.size() > 0);
-
-  auto res2 = get_service_addresses("ldap");
-  BOOST_REQUIRE_EQUAL(res2.size(), res.size());
-
-  std::regex regex("\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+");
-  BOOST_REQUIRE(std::regex_match(res[0], regex));
-  TLOG() << "Test Ldap END";
-}
