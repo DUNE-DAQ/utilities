@@ -32,7 +32,7 @@ TimestampEstimatorBase::wait_for_timestamp(uint64_t ts, std::atomic<bool>& conti
   auto get_sleep_time = [this, ts]() {
     auto est = get_wait_estimate(ts);
     auto pest = static_cast<long>(est.count() * 0.8);
-    if (pest < 1)
+    if (pest < 1 && est != std::chrono::microseconds(0))
       return std::chrono::microseconds(1);
     return std::chrono::microseconds(pest);
   };

@@ -37,6 +37,8 @@ TimestampEstimatorSystem::get_wait_estimate(uint64_t ts) const
   auto now_us = std::chrono::duration_cast<std::chrono::microseconds>(now);
   auto then = static_cast<long>(ts * 1000000. / m_clock_frequency_hz);
   auto then_us = std::chrono::microseconds(then);
+  if (then_us < now_us)
+    return std::chrono::microseconds(0);
   return then_us - now_us;
 }
 
