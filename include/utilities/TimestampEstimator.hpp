@@ -35,6 +35,8 @@ public:
 
   uint64_t get_timestamp_estimate() const override;
 
+  std::chrono::microseconds get_wait_estimate(uint64_t ts) const override;
+
   void add_timestamp_datapoint(uint64_t daq_time, uint64_t system_time);
 
   template <class T>
