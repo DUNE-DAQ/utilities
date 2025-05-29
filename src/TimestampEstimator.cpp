@@ -38,12 +38,20 @@ TimestampEstimator::TimestampEstimator(uint64_t clock_frequency_hz) // NOLINT(bu
 
 TimestampEstimator::~TimestampEstimator() {}
 
+/**
+ * @brief Returns the current timestamp estimate or a special value if no valid timestamp is available
+ * @return the current estimated timestamp (in units of DUNE Timing System ticks) or
+ *         std::numeric_limits<uint64_t>::max() if no valid timestamp is currently available
+ */
 uint64_t
 TimestampEstimator::get_timestamp_estimate() const
 {
   using namespace std::chrono;
 
   TimeSyncPoint estimate = m_current_timestamp_estimate.load();
+  // 27-May-2025, KAB: added check if a valid timestamp is available and, if not, return early
+  // with the special value that indicates that none is available.
+  if (estimate.daq_time == std::numeric_limits<uint64_t>::max()) {return estimate.daq_time;}
 
   auto delta_time_us = duration_cast<microseconds>(steady_clock::now() - estimate.system_time).count();
 
