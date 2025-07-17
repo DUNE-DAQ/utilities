@@ -4,10 +4,13 @@
  * This is part of the DUNE DAQ Application Framework, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
+ * 
+ * This is an implementation of TimestampEstimatorBase that uses timestamps
+ * from the TimeSync messages received by the application
  */
 
-#ifndef UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATOR_HPP_
-#define UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATOR_HPP_
+#ifndef UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORTIMESYNC_HPP_
+#define UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORTIMESYNC_HPP_
 
 #include "utilities/TimestampEstimatorBase.hpp"
 #include "utilities/Issues.hpp"
@@ -20,18 +23,18 @@ namespace dunedaq {
 namespace utilities {
 
 /**
- * @brief TimestampEstimator is an implementation of
+ * @brief TimestampEstimatorTimeSync is an implementation of
  * TimestampEstimatorBase that uses TimeSync messages from an input
  * queue to estimate the current timestamp
  **/
-class TimestampEstimator : public TimestampEstimatorBase
+class TimestampEstimatorTimeSync : public TimestampEstimatorBase
 {
 public:
-  TimestampEstimator(uint32_t run_number, uint64_t clock_frequency_hz);
+  TimestampEstimatorTimeSync(uint32_t run_number, uint64_t clock_frequency_hz);
 
-  explicit TimestampEstimator(uint64_t clock_frequency_hz); // NOLINT(build/unsigned)
+  explicit TimestampEstimatorTimeSync(uint64_t clock_frequency_hz); // NOLINT(build/unsigned)
 
-  virtual ~TimestampEstimator();
+  virtual ~TimestampEstimatorTimeSync();
 
   uint64_t get_timestamp_estimate() const override;
 
@@ -46,7 +49,7 @@ public:
 private:
 
   struct TimeSyncPoint {
-    uint64_t daq_time;
+    uint64_t daq_time{s_invalid_ts};
     std::chrono::time_point<std::chrono::steady_clock> system_time;
   };
   
@@ -54,7 +57,7 @@ private:
 
 
   uint64_t m_clock_frequency_hz; // NOLINT(build/unsigned)
-  uint64_t m_most_recent_daq_time;
+  uint64_t m_most_recent_daq_time{s_invalid_ts};
   uint64_t m_most_recent_system_time;
   std::mutex m_datapoint_mutex;
   uint32_t m_run_number {0};
@@ -65,6 +68,6 @@ private:
 } // namespace utilities
 } // namespace dunedaq
 
-#include "detail/TimestampEstimator.hxx"
+#include "detail/TimestampEstimatorTimeSync.hxx"
 
-#endif // UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATOR_HPP_
+#endif // UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORTIMESYNC_HPP_

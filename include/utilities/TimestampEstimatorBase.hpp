@@ -23,6 +23,8 @@ namespace utilities {
 class TimestampEstimatorBase
 {
 public:
+  static constexpr uint64_t s_invalid_ts = std::numeric_limits<uint64_t>::max();
+
   virtual ~TimestampEstimatorBase() = default;
   virtual uint64_t get_timestamp_estimate() const = 0;
   virtual std::chrono::microseconds get_wait_estimate(uint64_t ts) const = 0;
@@ -40,7 +42,12 @@ public:
 
      Returns kFinished if the timestamp became valid, or kInterrupted if continue_flag became false first
   */
-  WaitStatus wait_for_valid_timestamp(std::atomic<bool>& continue_flag);
+  WaitStatus wait_for_valid_timestamp(std::atomic<bool>& continue_flag)
+  {
+    uint64_t ts_discard = s_invalid_ts;
+    return wait_for_valid_timestamp(continue_flag, ts_discard);
+  }
+  WaitStatus wait_for_valid_timestamp(std::atomic<bool>& continue_flag, uint64_t& last_seen_ts);
 
   /**
      Wait for the current timestamp estimate to reach ts, or for
@@ -48,7 +55,12 @@ public:
 
      Returns kFinished if the timestamp became valid, or kInterrupted if continue_flag became false first
   */
-  WaitStatus wait_for_timestamp(uint64_t ts, std::atomic<bool>& continue_flag);
+  WaitStatus wait_for_requested_timestamp(uint64_t ts, std::atomic<bool>& continue_flag)
+  {
+    uint64_t ts_discard = s_invalid_ts;
+    return wait_for_requested_timestamp(ts, continue_flag, ts_discard);
+  }
+  WaitStatus wait_for_requested_timestamp(uint64_t ts, std::atomic<bool>& continue_flag, uint64_t& last_seen_ts);
 };
 
 } // namespace utilities
