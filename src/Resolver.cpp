@@ -9,6 +9,9 @@
 
 #include "utilities/Resolver.hpp"
 
+#include <string>
+#include <vector>
+
 std::vector<std::string>
 dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 {
@@ -16,7 +19,7 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 
   TLOG_DEBUG(12) << "Name is " << hostname;
 
-  struct addrinfo* result;
+  struct addrinfo* result = nullptr;
   auto s = getaddrinfo(hostname.c_str(), nullptr, nullptr, &result);
 
   if (s != 0) {
@@ -25,7 +28,7 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
   }
 
   for (auto rp = result; rp != nullptr; rp = rp->ai_next) {
-    char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+    char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV]; // NOLINT
 
     // Let's skip all the IPv6 here
     if (rp->ai_family == AF_INET6)
@@ -56,15 +59,15 @@ dunedaq::utilities::resolve_uri_hostname(std::string connection_string)
 {
   auto uri = parse_connection_string(connection_string);
 
-  if(uri.scheme == "tcp") {
-  auto output = get_ips_from_hostname(uri.host);
+  if (uri.scheme == "tcp") {
+    auto output = get_ips_from_hostname(uri.host);
 
-  for (size_t ii = 0; ii < output.size(); ++ii) {
-    output[ii] = "tcp://" + output[ii] + ":" + uri.port;
-  }
-  return output;
+    for (size_t ii = 0; ii < output.size(); ++ii) {
+      output[ii] = "tcp://" + output[ii] + ":" + uri.port;
+    }
+    return output;
   } else {
-  return { connection_string }; 
+    return { connection_string };
   }
 }
 

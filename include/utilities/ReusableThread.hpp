@@ -19,8 +19,7 @@
 #include <string>
 #include <thread>
 
-namespace dunedaq {
-namespace utilities {
+namespace dunedaq::utilities {
 
 class ReusableThread
 {
@@ -54,7 +53,7 @@ public:
   bool set_work(Function&& f, Args&&... args)
   {
     if (!m_task_assigned && m_task_executed.exchange(false)) {
-      m_task = std::bind(f, args...);
+      m_task = std::bind(f, args...); // NOLINT
       m_task_assigned = true;
       m_cv.notify_all();
       return true;
@@ -81,7 +80,6 @@ private:
   void thread_worker();
 };
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities
 
 #endif // UTILITIES_INCLUDE_UTILITIES_REUSABLETHREAD_HPP_

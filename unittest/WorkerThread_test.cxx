@@ -37,7 +37,7 @@ print_name(std::atomic<bool>&)
   // Give WorkerThread time to set the name
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-  char buffer[16];
+  char buffer[16]; // NOLINT
   int res = pthread_getname_np(pthread_self(), buffer, 16);
   BOOST_REQUIRE_EQUAL(res, 0);
   actual_thread_name = std::string(buffer);

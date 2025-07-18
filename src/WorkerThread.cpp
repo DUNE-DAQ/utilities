@@ -15,11 +15,15 @@
 
 #include "utilities/WorkerThread.hpp"
 
+#include <memory>
+#include <string>
+
 dunedaq::utilities::WorkerThread::WorkerThread(std::function<void(std::atomic<bool>&)> do_work)
   : m_thread_running(false)
   , m_working_thread(nullptr)
   , m_do_work(do_work)
-{}
+{
+}
 
 void
 dunedaq::utilities::WorkerThread::start_working_thread(const std::string& name)
@@ -30,7 +34,7 @@ dunedaq::utilities::WorkerThread::start_working_thread(const std::string& name)
                          "when it is already running!");
   }
   m_thread_running = true;
-  m_working_thread.reset(new std::thread([&] { m_do_work(std::ref(m_thread_running)); }));
+  m_working_thread = std::make_unique<std::thread>([&] { m_do_work(std::ref(m_thread_running)); });
   auto handle = m_working_thread->native_handle();
   auto rc = pthread_setname_np(handle, name.c_str());
   if (rc != 0) {

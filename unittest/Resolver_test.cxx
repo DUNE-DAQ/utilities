@@ -68,4 +68,3 @@ BOOST_AUTO_TEST_CASE(UriLookup)
   BOOST_REQUIRE_EXCEPTION(res = resolve_uri_hostname("blah"), InvalidUri, [](InvalidUri const&) { return true; });
   TLOG() << "Test UriLookup END";
 }
-
