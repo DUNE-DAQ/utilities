@@ -10,8 +10,7 @@
 
 #include <thread>
 
-namespace dunedaq {
-namespace utilities {
+namespace dunedaq::utilities {
 
 /**
  * @brief Waits for a valid timestamp to become available.  Returns a status value that
@@ -25,7 +24,7 @@ namespace utilities {
  * @return kFinished if a valid timestamp is available or kInterrupted if one is not
  */
 TimestampEstimatorBase::WaitStatus
-TimestampEstimatorBase::wait_for_valid_timestamp(std::atomic<bool>& continue_flag, uint64_t& last_seen_ts)
+TimestampEstimatorBase::wait_for_valid_timestamp(std::atomic<bool>& continue_flag, uint64_t& last_seen_ts) // NOLINT
 {
   last_seen_ts = s_invalid_ts;
   auto sleep_time = std::chrono::microseconds(1);
@@ -39,17 +38,18 @@ TimestampEstimatorBase::wait_for_valid_timestamp(std::atomic<bool>& continue_fla
 
   // 27-May-2025, KAB: modified this return statement so that the return code is based on whether a
   // valid timestamp is available (instead of whether the caller asked the method to wait or not)
-  return (last_seen_ts != s_invalid_ts) ? TimestampEstimatorBase::kFinished
-                                                    : TimestampEstimatorBase::kInterrupted;
+  return (last_seen_ts != s_invalid_ts) ? TimestampEstimatorBase::kFinished : TimestampEstimatorBase::kInterrupted;
 }
 
 TimestampEstimatorBase::WaitStatus
-TimestampEstimatorBase::wait_for_requested_timestamp(uint64_t ts, std::atomic<bool>& continue_flag, uint64_t& last_seen_ts)
+TimestampEstimatorBase::wait_for_requested_timestamp(uint64_t ts, // NOLINT(build/unsigned)
+                                                     std::atomic<bool>& continue_flag,
+                                                     uint64_t& last_seen_ts) // NOLINT(build/unsigned)
 {
   last_seen_ts = s_invalid_ts;
   auto get_sleep_time = [this, ts]() {
     auto est = get_wait_estimate(ts);
-    auto pest = static_cast<long>(est.count() * 0.8);
+    auto pest = static_cast<std::chrono::microseconds::rep>(static_cast<double>(est.count()) * 0.8);
     if (pest < 1 && est != std::chrono::microseconds(0))
       return std::chrono::microseconds(1);
     return std::chrono::microseconds(pest);
@@ -64,5 +64,4 @@ TimestampEstimatorBase::wait_for_requested_timestamp(uint64_t ts, std::atomic<bo
                                                               : TimestampEstimatorBase::kInterrupted;
 }
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities

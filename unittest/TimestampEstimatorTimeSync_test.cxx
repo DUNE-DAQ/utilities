@@ -25,14 +25,15 @@
 #include <memory>
 #include <string>
 
-struct DummyTimeSync {
-  uint64_t daq_time{ dunedaq::utilities::TimestampEstimatorBase::s_invalid_ts };
+struct DummyTimeSync
+{
+  uint64_t daq_time{ dunedaq::utilities::TimestampEstimatorBase::s_invalid_ts }; // NOLINT(build/unsigned)
   /// The current system time
-  uint64_t system_time{ 0 };
+  uint64_t system_time{ 0 }; // NOLINT(build/unsigned)
   /// Sequence Number of this message, for debugging
   uint64_t sequence_number{ 0 }; // NOLINT(build/unsigned)
   /// Run number at time of creation
-  uint32_t run_number{ 0 };
+  uint32_t run_number{ 0 }; // NOLINT(build/unsigned)
   /// PID of the creating process, for debugging
   uint32_t source_pid{ 0 }; // NOLINT(build/unsigned)
 };
@@ -53,7 +54,7 @@ BOOST_AUTO_TEST_SUITE(BOOST_TEST_MODULE)
 //     iomanager::ConnectionIds_t connections;
 //     connections.emplace_back(
 //       iomanager::ConnectionId{ "dummy", iomanager::ServiceType::kQueue, "TimeSync", "queue://kFollyMPMCQueue:100" });
-    
+
 //     get_iomanager()->configure(connections);
 //   }
 
@@ -70,13 +71,16 @@ BOOST_AUTO_TEST_CASE(Basics)
   using namespace std::chrono_literals;
 
   const uint64_t clock_frequency_hz = 62'500'000; // NOLINT(build/unsigned)
+  const double clock_frequency_Mhz = 62.5;
 
-  const uint32_t run_num = 5;
+  const uint32_t run_num = 5; // NOLINT(build/unsigned)
   utilities::TimestampEstimatorTimeSync te(run_num, clock_frequency_hz);
 
-  uint64_t daq_time_start = 1'000'000;
-  uint64_t system_time_start = static_cast<uint64_t>(duration_cast<microseconds>(system_clock::now().time_since_epoch()).count()); // NOLINT
-  uint64_t steady_time_start = static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
+  uint64_t daq_time_start = 1'000'000; // NOLINT(build/unsigned)
+  auto system_time_start =
+    static_cast<uint64_t>(duration_cast<microseconds>(system_clock::now().time_since_epoch()).count()); // NOLINT
+  auto steady_time_start =
+    static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
 
   DummyTimeSync ts;
   ts.daq_time = daq_time_start;
@@ -87,17 +91,17 @@ BOOST_AUTO_TEST_CASE(Basics)
 
   te.timesync_callback(ts);
 
-  for( size_t i=0; i<100; ++i) {
+  for (size_t i = 0; i < 100; ++i) {
 
     std::this_thread::sleep_for(10ms);
-    uint64_t steady_now = static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count());
-    uint64_t te_now = te.get_timestamp_estimate();
-    int64_t steady_diff = (steady_now - steady_time_start);
-    int64_t te_diff = (te_now-daq_time_start);
-    int64_t dd = te_diff-(steady_diff*clock_frequency_hz/1'000'000);
+    auto steady_now =
+      static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
+    uint64_t te_now = te.get_timestamp_estimate(); // NOLINT(build/unsigned)
+    auto steady_diff = static_cast<double>(steady_now - steady_time_start);
+    auto te_diff = static_cast<double>(te_now - daq_time_start);
+    auto dd = static_cast<int64_t>(te_diff - (steady_diff * clock_frequency_Mhz));
 
     BOOST_CHECK_LT(abs(dd), 1'000);
-
   }
 }
 
@@ -109,13 +113,16 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   using namespace std::chrono_literals;
 
   const uint64_t clock_frequency_hz = 62'500'000; // NOLINT(build/unsigned)
+  const double clock_frequency_Mhz = 62.5;
 
-  const uint32_t run_num = 5;
+  const uint32_t run_num = 5; // NOLINT(build/unsigned)
   utilities::TimestampEstimatorTimeSync te(run_num, clock_frequency_hz);
 
-  uint64_t daq_time_start = 1'000'000;
-  uint64_t system_time_start = static_cast<uint64_t>(duration_cast<microseconds>(system_clock::now().time_since_epoch()).count()); // NOLINT
-  uint64_t steady_time_start = static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
+  uint64_t daq_time_start = 1'000'000; // NOLINT(build/unsigned)
+  auto system_time_start =
+    static_cast<uint64_t>(duration_cast<microseconds>(system_clock::now().time_since_epoch()).count()); // NOLINT
+  auto steady_time_start =
+    static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
 
   // create a dummy TimeSync message for later use
   DummyTimeSync ts;
@@ -129,7 +136,9 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   std::atomic<bool> do_continue_flag{ true };
   std::atomic<bool> continue_flag_for_thread{ true };
   std::atomic<bool> thread_has_finished{ false };
-  std::atomic<utilities::TimestampEstimatorBase::WaitStatus> return_code_from_thread_wait{ utilities::TimestampEstimatorBase::kInterrupted };
+  std::atomic<utilities::TimestampEstimatorBase::WaitStatus> return_code_from_thread_wait{
+    utilities::TimestampEstimatorBase::kInterrupted
+  };
 
   // spawn a thread that waits until the TSE can provide a valid timestamp
   std::function<void()> valid_timestamp_wait_func = [&]() {
@@ -142,22 +151,20 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   // a special value that indicates that it can't yet provide a valid timestamp
   // when we ask it for the current timestamp estimate.
   // Also, verify that the wait thread is still waiting.
-  for( size_t i=0; i<10; ++i) {
+  for (size_t i = 0; i < 10; ++i) {
 
     std::this_thread::sleep_for(100ms);
-    uint64_t te_now = te.get_timestamp_estimate();
+    uint64_t te_now = te.get_timestamp_estimate(); // NOLINT(build/unsigned)
     BOOST_CHECK_EQUAL(te_now, utilities::TimestampEstimatorBase::s_invalid_ts);
 
     BOOST_CHECK_EQUAL(thread_has_finished, false);
-
   }
 
   // if we ask the TSE if it has a valid timestamp, and we tell it that it doesn't
   // need to wait until it gets one, AND the TSE instance has not yet received
   // a TimeSync message, it should return immediately and tell us that it is returning
   // without being able to provide a valid timestamp (kInterrupted).
-  BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_not_continue_flag),
-                    utilities::TimestampEstimatorBase::kInterrupted);
+  BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_not_continue_flag), utilities::TimestampEstimatorBase::kInterrupted);
   BOOST_CHECK_EQUAL(thread_has_finished, false);
 
   // pass a TimeSync message into the TSE instance
@@ -168,31 +175,30 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   BOOST_CHECK_EQUAL(thread_has_finished, true);
   BOOST_CHECK_EQUAL(return_code_from_thread_wait, utilities::TimestampEstimatorBase::kFinished);
   // if the thread has not finished, tell it to finish now
-  if (! thread_has_finished) {continue_flag_for_thread.store(false);}
+  if (!thread_has_finished) {
+    continue_flag_for_thread.store(false);
+  }
 
   // verify that the TSE instance now provides valid timestamps and those
   // timestamp track closely to wallclock time (computer system time)
-  for( size_t i=0; i<10; ++i) {
+  for (size_t i = 0; i < 10; ++i) {
 
     std::this_thread::sleep_for(100ms);
-    uint64_t steady_now = static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count());
-    uint64_t te_now = te.get_timestamp_estimate();
-    int64_t steady_diff = (steady_now - steady_time_start);
-    int64_t te_diff = (te_now-daq_time_start);
-    int64_t dd = te_diff-(steady_diff*clock_frequency_hz/1'000'000);
+    auto steady_now =
+      static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
+    auto te_now = te.get_timestamp_estimate();
+    auto steady_diff = static_cast<double>(steady_now - steady_time_start);
+    auto te_diff = static_cast<double>(te_now - daq_time_start);
+    auto dd = static_cast<int64_t>(te_diff - (steady_diff * clock_frequency_Mhz));
 
     BOOST_CHECK_LT(abs(dd), 1'000);
-
   }
 
   // now the TSE instance "wait" method should return immediately with a status
   // that indicates that it *does* have a valid timestamp, independent of whether
   // we tell it to wait for a valid timestamp or not
-  BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_not_continue_flag),
-                    utilities::TimestampEstimatorBase::kFinished);
-  BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_continue_flag),
-                    utilities::TimestampEstimatorBase::kFinished);
-
+  BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_not_continue_flag), utilities::TimestampEstimatorBase::kFinished);
+  BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_continue_flag), utilities::TimestampEstimatorBase::kFinished);
 }
 
 BOOST_AUTO_TEST_CASE(AdditionalTestIdeas)

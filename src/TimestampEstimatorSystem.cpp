@@ -12,35 +12,35 @@
 
 #include <chrono>
 
-namespace dunedaq {
-namespace utilities {
+namespace dunedaq::utilities {
 
 TimestampEstimatorSystem::TimestampEstimatorSystem(uint64_t clock_frequency_hz) // NOLINT(build/unsigned)
   : m_clock_frequency_hz(clock_frequency_hz)
 {
   TLOG_DEBUG(0) << "Clock frequency is " << m_clock_frequency_hz
-                << " clock_frequency_hz/1000000.=" << (m_clock_frequency_hz / 1000000.);
+                << " clock_frequency_hz/1000000.=" << (static_cast<double>(m_clock_frequency_hz) / 1000000.);
 }
 
-uint64_t
+uint64_t // NOLINT(build/unsigned)
 TimestampEstimatorSystem::get_timestamp_estimate() const
 {
   auto now = std::chrono::system_clock::now().time_since_epoch();
   auto now_us = std::chrono::duration_cast<std::chrono::microseconds>(now);
-  return (m_clock_frequency_hz / 1000000.) * now_us.count();
+  return static_cast<uint64_t>((static_cast<double>(m_clock_frequency_hz) / 1000000.) * // NOLINT
+                               static_cast<double>(now_us.count()));
 }
 
 std::chrono::microseconds
-TimestampEstimatorSystem::get_wait_estimate(uint64_t ts) const
+TimestampEstimatorSystem::get_wait_estimate(uint64_t ts) const // NOLINT(build/unsigned)
 {
   auto now = std::chrono::system_clock::now().time_since_epoch();
   auto now_us = std::chrono::duration_cast<std::chrono::microseconds>(now);
-  auto then = static_cast<long>(ts * 1000000. / m_clock_frequency_hz);
+  auto then = static_cast<std::chrono::microseconds::rep>(static_cast<double>(ts) * 1000000. /
+                                                          static_cast<double>(m_clock_frequency_hz));
   auto then_us = std::chrono::microseconds(then);
   if (then_us < now_us)
     return std::chrono::microseconds(0);
   return then_us - now_us;
 }
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities

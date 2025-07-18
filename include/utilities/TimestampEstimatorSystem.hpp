@@ -9,11 +9,10 @@
 #ifndef UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORSYSTEM_HPP_
 #define UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORSYSTEM_HPP_
 
-#include "utilities/TimestampEstimatorBase.hpp"
 #include "utilities/Issues.hpp"
+#include "utilities/TimestampEstimatorBase.hpp"
 
-namespace dunedaq {
-namespace utilities {
+namespace dunedaq::utilities {
 
 /**
  * @brief TimestampEstimatorSystem is an implementation of
@@ -24,15 +23,14 @@ class TimestampEstimatorSystem : public TimestampEstimatorBase
 public:
   explicit TimestampEstimatorSystem(uint64_t clock_frequency_hz); // NOLINT(build/unsigned)
 
-  uint64_t get_timestamp_estimate() const override;
+  uint64_t get_timestamp_estimate() const override; // NOLINT(build/unsigned)
 
-  std::chrono::microseconds get_wait_estimate(uint64_t ts) const override;
+  std::chrono::microseconds get_wait_estimate(uint64_t ts) const override; // NOLINT(build/unsigned)
 
 private:
   uint64_t m_clock_frequency_hz; // NOLINT(build/unsigned)
 };
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities
 
 #endif // UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORSYSTEM_HPP_

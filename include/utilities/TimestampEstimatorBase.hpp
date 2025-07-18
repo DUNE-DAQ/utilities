@@ -11,9 +11,9 @@
 
 #include <atomic>
 #include <chrono>
+#include <limits>
 
-namespace dunedaq {
-namespace utilities {
+namespace dunedaq::utilities {
 
 /**
  * @brief TimestampEstimatorBase is the base class for timestamp-based
@@ -23,11 +23,11 @@ namespace utilities {
 class TimestampEstimatorBase
 {
 public:
-  static constexpr uint64_t s_invalid_ts = std::numeric_limits<uint64_t>::max();
+  static constexpr uint64_t s_invalid_ts = std::numeric_limits<uint64_t>::max(); // NOLINT(build/unsigned)
 
   virtual ~TimestampEstimatorBase() = default;
-  virtual uint64_t get_timestamp_estimate() const = 0;
-  virtual std::chrono::microseconds get_wait_estimate(uint64_t ts) const = 0;
+  virtual uint64_t get_timestamp_estimate() const = 0;                        // NOLINT(build/unsigned)
+  virtual std::chrono::microseconds get_wait_estimate(uint64_t ts) const = 0; // NOLINT(build/unsigned)
 
   enum WaitStatus
   {
@@ -44,10 +44,11 @@ public:
   */
   WaitStatus wait_for_valid_timestamp(std::atomic<bool>& continue_flag)
   {
-    uint64_t ts_discard = s_invalid_ts;
+    uint64_t ts_discard = s_invalid_ts; // NOLINT(build/unsigned)
     return wait_for_valid_timestamp(continue_flag, ts_discard);
   }
-  WaitStatus wait_for_valid_timestamp(std::atomic<bool>& continue_flag, uint64_t& last_seen_ts);
+  WaitStatus wait_for_valid_timestamp(std::atomic<bool>& continue_flag,
+                                      uint64_t& last_seen_ts); // NOLINT(build/unsigned)
 
   /**
      Wait for the current timestamp estimate to reach ts, or for
@@ -55,15 +56,16 @@ public:
 
      Returns kFinished if the timestamp became valid, or kInterrupted if continue_flag became false first
   */
-  WaitStatus wait_for_requested_timestamp(uint64_t ts, std::atomic<bool>& continue_flag)
+  WaitStatus wait_for_requested_timestamp(uint64_t ts, std::atomic<bool>& continue_flag) // NOLINT(build/unsigned)
   {
-    uint64_t ts_discard = s_invalid_ts;
+    uint64_t ts_discard = s_invalid_ts; // NOLINT(build/unsigned)
     return wait_for_requested_timestamp(ts, continue_flag, ts_discard);
   }
-  WaitStatus wait_for_requested_timestamp(uint64_t ts, std::atomic<bool>& continue_flag, uint64_t& last_seen_ts);
+  WaitStatus wait_for_requested_timestamp(uint64_t ts, // NOLINT(build/unsigned)
+                                          std::atomic<bool>& continue_flag,
+                                          uint64_t& last_seen_ts); // NOLINT(build/unsigned)
 };
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities
 
 #endif // UTILITIES_INCLUDE_UTILITIES_TIMESTAMPESTIMATORBASE_HPP_

@@ -28,8 +28,7 @@ BOOST_AUTO_TEST_CASE(Basics)
   std::atomic<bool> continue_flag{ true };
   dunedaq::utilities::TimestampEstimatorSystem tes(clock_frequency_hz);
 
-  BOOST_CHECK_EQUAL(tes.wait_for_valid_timestamp(continue_flag),
-                    dunedaq::utilities::TimestampEstimatorBase::kFinished);
+  BOOST_CHECK_EQUAL(tes.wait_for_valid_timestamp(continue_flag), dunedaq::utilities::TimestampEstimatorBase::kFinished);
 
   std::atomic<bool> do_not_continue_flag{ false };
   BOOST_CHECK_EQUAL(tes.wait_for_valid_timestamp(do_not_continue_flag),
@@ -57,14 +56,16 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   using namespace std::chrono_literals;
 
   const uint64_t clock_frequency_hz = 62'500'000; // NOLINT(build/unsigned)
+  const double clock_frequency_Mhz = 62.5;
 
   utilities::TimestampEstimatorSystem te(clock_frequency_hz);
 
-  uint64_t system_time_start =
+  auto system_time_start =
     static_cast<uint64_t>(duration_cast<microseconds>(system_clock::now().time_since_epoch()).count()); // NOLINT
-  uint64_t steady_time_start =
+  auto steady_time_start =
     static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
-  uint64_t daq_time_start = (clock_frequency_hz / 1000000.) * system_time_start;
+  auto daq_time_start =
+    static_cast<uint64_t>((clock_frequency_Mhz) * static_cast<double>(system_time_start)); // NOLINT(build/unsigned)
 
   std::atomic<bool> do_not_continue_flag{ false };
   std::atomic<bool> do_continue_flag{ true };
@@ -84,12 +85,11 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   // TimestampEstimatorSystem always provides valid timestamps
   std::this_thread::sleep_for(100ms);
   BOOST_CHECK_EQUAL(thread_has_finished, true);
-  
+
   // TimestampEstimatorSystem always should return kFinished
   BOOST_CHECK_EQUAL(te.wait_for_valid_timestamp(do_not_continue_flag),
                     dunedaq::utilities::TimestampEstimatorBase::kFinished);
   BOOST_CHECK_EQUAL(thread_has_finished, true);
-
 
   // verify that the wait thread has finished and it received the expected return code
   BOOST_CHECK_EQUAL(thread_has_finished, true);
@@ -104,12 +104,12 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   for (size_t i = 0; i < 10; ++i) {
 
     std::this_thread::sleep_for(100ms);
-    uint64_t steady_now =
-      static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count());
-    uint64_t te_now = te.get_timestamp_estimate();
-    int64_t steady_diff = (steady_now - steady_time_start);
-    int64_t te_diff = (te_now - daq_time_start);
-    int64_t dd = te_diff - (steady_diff * clock_frequency_hz / 1'000'000);
+    auto steady_now =
+      static_cast<uint64_t>(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count()); // NOLINT
+    uint64_t te_now = te.get_timestamp_estimate(); // NOLINT(build/unsigned)
+    auto steady_diff = static_cast<int64_t>(steady_now - steady_time_start);
+    auto te_diff = static_cast<int64_t>(te_now - daq_time_start);
+    auto dd = static_cast<int64_t>(te_diff - (steady_diff * clock_frequency_hz / 1'000'000));
 
     BOOST_CHECK_LT(abs(dd), 1'000);
   }
@@ -130,6 +130,5 @@ BOOST_AUTO_TEST_CASE(AdditionalTestIdeas)
   // non-standard clock frequency
   // bursts and delays
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
