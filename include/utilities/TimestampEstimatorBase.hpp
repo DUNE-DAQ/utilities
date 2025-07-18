@@ -1,5 +1,7 @@
 /**
- * @file TimestampEstimatorSystem.hpp TimestampEstimatorSystem Class
+ * @file TimestampEstimatorBase.hpp TimestampEstimatorBase Class
+ *
+ * This is the base class for the TimestampEstimator implementations
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
