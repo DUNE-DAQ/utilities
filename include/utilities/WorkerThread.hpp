@@ -109,7 +109,7 @@ public:
 
 private:
   std::atomic<bool> m_thread_running;
-  std::unique_ptr<std::thread> m_working_thread;
+  std::unique_ptr<std::jthread> m_working_thread;
   std::function<void(std::atomic<bool>&)> m_do_work;
 };
 } // namespace utilities
