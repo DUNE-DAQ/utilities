@@ -42,7 +42,7 @@ namespace utilities {
  * @brief WorkerThread contains a thread which runs the do_work()
  * function
  *
- * WorkerThread runs a given function in a std::thread and allows that
+ * WorkerThread runs a given function in a std::jthread and allows that
  * work function to be started and stopped via the
  * start_working_thread() and stop_working_thread() methods,
  * respectively. The work function takes a std::atomic<bool>&  which
