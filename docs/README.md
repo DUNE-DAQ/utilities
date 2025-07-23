@@ -4,7 +4,7 @@
 
 * `Resolver` -- Performs DNS SRV record lookups
 * `ReusableThread` -- Wrapper around a `std::thread` for executing short-lived tasks
-* [`WorkerThread`](WorkerThread-Usage-Notes/) -- Wrapper around a `std::thread` for long-lived tasks (e.g. DAQModule work loops) 
+* [`WorkerThread`](WorkerThread-Usage-Notes/) -- Wrapper around a `std::jthread` for long-lived tasks (e.g. DAQModule work loops) 
 
 ### API Diagram
 

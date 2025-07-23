@@ -22,9 +22,7 @@
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-
-namespace utilities {
+namespace dunedaq::utilities {
 
 std::vector<std::string>
 get_ips_from_hostname(std::string hostname);
@@ -32,22 +30,22 @@ get_ips_from_hostname(std::string hostname);
 std::vector<std::string>
 resolve_uri_hostname(std::string connection_string);
 
-struct ZmqUri {
-  std::string scheme{""};
-  std::string host{""};
-  std::string port{""};
+struct ZmqUri
+{
+  std::string scheme{ "" };
+  std::string host{ "" };
+  std::string port{ "" };
   std::string to_string()
   {
     auto tmp = scheme + "://" + host;
     if (port != "")
       return tmp + ":" + port;
-  return tmp;
+    return tmp;
   }
 };
 ZmqUri
 parse_connection_string(std::string connection_string);
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities
 
 #endif // UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_

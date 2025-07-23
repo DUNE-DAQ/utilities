@@ -37,7 +37,7 @@ print_name(std::atomic<bool>&)
   // Give WorkerThread time to set the name
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-  char buffer[16];
+  char buffer[16]; // NOLINT
   int res = pthread_getname_np(pthread_self(), buffer, 16);
   BOOST_REQUIRE_EQUAL(res, 0);
   actual_thread_name = std::string(buffer);
@@ -113,13 +113,15 @@ BOOST_AUTO_TEST_CASE(abort_checks, *boost::unit_test::depends_on("inappropriate_
              "WorkerThread without having start_working_thread() thread "
              "called destructs without aborting the program, as expected");
 
-  // BOOST_TEST_MESSAGE(
-  //     "You should *expect* the program to abort in a moment, since we're "
-  //     "destructing a WorkerThread instance after calling "
-  //     "start_working_thread() but before calling stop_working_thread_()");
-
-  // {
-  //   dunedaq::utilities::WorkerThread umth(do_something);
-  //   umth.start_working_thread();
-  // }
+  auto start_time = std::chrono::steady_clock::now();
+  {
+    dunedaq::utilities::WorkerThread umth(do_something);
+    umth.start_working_thread();
+  }
+  BOOST_TEST(true,
+             "WorkerThread having start_working_thread() thread "
+             "called destructs without aborting the program, as expected");
+  BOOST_REQUIRE(
+    std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() >=
+    5000);
 }

@@ -28,7 +28,8 @@ BOOST_AUTO_TEST_CASE(Named)
   public:
     explicit DerivesFromNamed(const std::string& name)
       : m_my_name(name)
-    {}
+    {
+    }
     virtual const std::string& get_name() const { return m_my_name; }
 
   private:
