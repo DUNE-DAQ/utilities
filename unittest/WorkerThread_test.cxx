@@ -113,13 +113,11 @@ BOOST_AUTO_TEST_CASE(abort_checks, *boost::unit_test::depends_on("inappropriate_
              "WorkerThread without having start_working_thread() thread "
              "called destructs without aborting the program, as expected");
 
-  // BOOST_TEST_MESSAGE(
-  //     "You should *expect* the program to abort in a moment, since we're "
-  //     "destructing a WorkerThread instance after calling "
-  //     "start_working_thread() but before calling stop_working_thread_()");
-
-  // {
-  //   dunedaq::utilities::WorkerThread umth(do_something);
-  //   umth.start_working_thread();
-  // }
+  {
+    dunedaq::utilities::WorkerThread umth(do_something);
+    umth.start_working_thread();
+  }
+  BOOST_TEST(true,
+             "WorkerThread having start_working_thread() thread "
+             "called destructs without aborting the program, as expected");
 }
