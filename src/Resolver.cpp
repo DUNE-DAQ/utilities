@@ -57,7 +57,7 @@ dunedaq::utilities::get_ips_from_hostname(std::string hostname)
 std::vector<std::string>
 dunedaq::utilities::resolve_uri_hostname(std::string connection_string)
 {
-  auto uri = ZmqUri(connection_string);
+  ZmqUri uri(connection_string);
 
   if (uri.scheme == "tcp") {
     auto output = get_ips_from_hostname(uri.host);
