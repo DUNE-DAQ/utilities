@@ -1,12 +1,10 @@
 /**
  * @file WorkerThread.cpp WorkerThread class definitions
  *
- * WorkerThread defines a std::thread which runs the do_work()
+ * WorkerThread defines a std::jthread which runs the do_work()
  * function as well as methods to start and stop that thread.
  * This file is intended to help reduce code duplication for the common
- * task of starting and stopping threads. As in artdaq, std::thread may
- * be replaced by boost::thread to allow setting the stack size at a
- * later date if that functionality is found to be necessary.
+ * task of starting and stopping threads.
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -34,7 +32,7 @@ dunedaq::utilities::WorkerThread::start_working_thread(const std::string& name)
                          "when it is already running!");
   }
   m_thread_running = true;
-  m_working_thread = std::make_unique<std::thread>([&] { m_do_work(std::ref(m_thread_running)); });
+  m_working_thread = std::make_unique<std::jthread>([&] { m_do_work(std::ref(m_thread_running)); });
   auto handle = m_working_thread->native_handle();
   auto rc = pthread_setname_np(handle, name.c_str());
   if (rc != 0) {
