@@ -42,9 +42,9 @@ struct ZmqUri
       return tmp + ":" + port;
     return tmp;
   }
+
+  explicit ZmqUri(std::string connection_string);
 };
-ZmqUri
-parse_connection_string(std::string connection_string);
 
 } // namespace dunedaq::utilities
 
