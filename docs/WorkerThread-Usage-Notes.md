@@ -1,6 +1,6 @@
 # About utilities::WorkerThread
 
-WorkerThread defines a std::thread which runs the do_work() function as well as methods to start and stop that thread.
+WorkerThread defines a std::jthread which runs the do_work() function as well as methods to start and stop that thread.
 It is intended to help reduce code duplication for the common task of starting and stopping threads.
 
 ## Instantiation

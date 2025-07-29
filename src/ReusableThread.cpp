@@ -12,6 +12,7 @@
 #include "utilities/ReusableThread.hpp"
 #include "utilities/WorkerThread.hpp" // contains exception definition
 
+#include <string>
 
 dunedaq::utilities::ReusableThread::ReusableThread(int threadid)
   : m_thread_id(threadid)
@@ -20,7 +21,8 @@ dunedaq::utilities::ReusableThread::ReusableThread(int threadid)
   , m_thread_quit(false)
   , m_worker_done(false)
   , m_thread(&ReusableThread::thread_worker, this)
-{}
+{
+}
 
 dunedaq::utilities::ReusableThread::~ReusableThread()
 {
@@ -39,7 +41,7 @@ void
 dunedaq::utilities::ReusableThread::set_name(const std::string& name, int tid)
 {
   set_thread_id(tid);
-  char tname[16];
+  char tname[16];                                  // NOLINT
   snprintf(tname, 16, "%s-%d", name.c_str(), tid); // NOLINT
   auto handle = m_thread.native_handle();
   pthread_setname_np(handle, tname);
@@ -52,7 +54,7 @@ dunedaq::utilities::ReusableThread::set_pin(int cpuid)
 {
   // Require that the thread has been named
   if (!m_named) {
-    ers::warning( ThreadingIssue( ERS_HERE, "May not set CPU affinity for un-named thread" ) );
+    ers::warning(ThreadingIssue(ERS_HERE, "May not set CPU affinity for un-named thread"));
   }
 
   auto handle = m_thread.native_handle();
@@ -62,7 +64,7 @@ dunedaq::utilities::ReusableThread::set_pin(int cpuid)
   int rc = pthread_setaffinity_np(handle, sizeof(cpu_set_t), &cpuset);
 
   if (rc != 0) {
-    ers::warning( ThreadingIssue( ERS_HERE, "Error calling pthread_setaffinity_np: " + std::to_string( rc ) ) );
+    ers::warning(ThreadingIssue(ERS_HERE, "Error calling pthread_setaffinity_np: " + std::to_string(rc)));
   }
 }
 
