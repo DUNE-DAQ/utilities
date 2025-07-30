@@ -8,14 +8,9 @@
 #ifndef UTILITIES_INCLUDE_UTILITIES_ISSUES_HPP_
 #define UTILITIES_INCLUDE_UTILITIES_ISSUES_HPP_
 
-#include <ers/Issue.hpp>
 #include "logging/Logging.hpp" // NOTE: if ISSUES ARE DECLARED BEFORE include logging/Logging.hpp, TLOG_DEBUG<<issue wont work.
 
 #include <string>
-
-#define TLVL_TIME_SYNC_PROPERTIES 17
-#define TLVL_TIME_SYNC_NOTES 18
-#define TLVL_TIME_SYNC_NEW_ESTIMATE 19
 
 namespace dunedaq {
 

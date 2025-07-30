@@ -1,12 +1,12 @@
 /**
- * @file TimestampEstimator.cpp
+ * @file TimestampEstimatorTimeSync.cpp
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#include "utilities/TimestampEstimator.hpp"
+#include "utilities/TimestampEstimatorTimeSync.hpp"
 #include "utilities/Issues.hpp"
 
 #include "logging/Logging.hpp"
@@ -14,64 +14,67 @@
 #include <memory>
 #include <unistd.h>
 
-#define TRACE_NAME "TimestampEstimator" // NOLINT
+#define TRACE_NAME "TimestampEstimatorTimeSync" // NOLINT
 
-namespace dunedaq {
-namespace utilities {
-TimestampEstimator::TimestampEstimator(uint32_t run_number, uint64_t clock_frequency_hz) // NOLINT(build/unsigned)
-  : TimestampEstimator(clock_frequency_hz)
+namespace dunedaq::utilities {
+
+TimestampEstimatorTimeSync::TimestampEstimatorTimeSync(uint32_t run_number,         // NOLINT(build/unsigned)
+                                                       uint64_t clock_frequency_hz) // NOLINT(build/unsigned)
+  : TimestampEstimatorTimeSync(clock_frequency_hz)
 {
   m_run_number = run_number;
 }
 
-TimestampEstimator::TimestampEstimator(uint64_t clock_frequency_hz) // NOLINT(build/unsigned)
-  : m_current_timestamp_estimate(
-      TimeSyncPoint{ std::numeric_limits<uint64_t>::max(), std::chrono::time_point<std::chrono::steady_clock>() })
+TimestampEstimatorTimeSync::TimestampEstimatorTimeSync(uint64_t clock_frequency_hz) // NOLINT(build/unsigned)
+  : m_current_timestamp_estimate(TimeSyncPoint{ s_invalid_ts, std::chrono::time_point<std::chrono::steady_clock>() })
   , m_clock_frequency_hz(clock_frequency_hz)
-  , m_most_recent_daq_time(0)
+  , m_most_recent_daq_time(s_invalid_ts)
   , m_most_recent_system_time(0)
   , m_run_number(0)
   , m_received_timesync_count(0)
 {
-  m_current_process_id = static_cast<uint32_t>(getpid());
+  m_current_process_id = static_cast<uint32_t>(getpid()); // NOLINT(build/unsigned)
 }
 
-TimestampEstimator::~TimestampEstimator() {}
+TimestampEstimatorTimeSync::~TimestampEstimatorTimeSync() {}
 
 /**
  * @brief Returns the current timestamp estimate or a special value if no valid timestamp is available
  * @return the current estimated timestamp (in units of DUNE Timing System ticks) or
- *         std::numeric_limits<uint64_t>::max() if no valid timestamp is currently available
+ *         s_invalid_ts if no valid timestamp is currently available
  */
-uint64_t
-TimestampEstimator::get_timestamp_estimate() const
+uint64_t // NOLINT(build/unsigned)
+TimestampEstimatorTimeSync::get_timestamp_estimate() const
 {
   using namespace std::chrono;
 
   TimeSyncPoint estimate = m_current_timestamp_estimate.load();
   // 27-May-2025, KAB: added check if a valid timestamp is available and, if not, return early
   // with the special value that indicates that none is available.
-  if (estimate.daq_time == std::numeric_limits<uint64_t>::max()) {return estimate.daq_time;}
+  if (estimate.daq_time == s_invalid_ts) {
+    return estimate.daq_time;
+  }
 
   auto delta_time_us = duration_cast<microseconds>(steady_clock::now() - estimate.system_time).count();
 
-  const uint64_t new_timestamp = estimate.daq_time + delta_time_us * m_clock_frequency_hz / 1000000;
+  const uint64_t new_timestamp = estimate.daq_time + delta_time_us * m_clock_frequency_hz / 1000000; // NOLINT
 
   return new_timestamp;
 }
 
 std::chrono::microseconds
-TimestampEstimator::get_wait_estimate(uint64_t ts) const
+TimestampEstimatorTimeSync::get_wait_estimate(uint64_t ts) const // NOLINT(build/unsigned)
 {
   auto now = get_timestamp_estimate();
   if (now > ts)
     return std::chrono::microseconds(0);
   auto diff = ts - now;
-  return std::chrono::microseconds(static_cast<long>(diff * 1000000. / m_clock_frequency_hz));
+  return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(
+    static_cast<double>(diff) * 1000000. / static_cast<double>(m_clock_frequency_hz)));
 }
 
 void
-TimestampEstimator::add_timestamp_datapoint(uint64_t daq_time, uint64_t system_time)
+TimestampEstimatorTimeSync::add_timestamp_datapoint(uint64_t daq_time, uint64_t system_time) // NOLINT(build/unsigned)
 {
   using namespace std::chrono;
 
@@ -79,17 +82,17 @@ TimestampEstimator::add_timestamp_datapoint(uint64_t daq_time, uint64_t system_t
 
   // First, update the latest timestamp
   TimeSyncPoint estimate = m_current_timestamp_estimate.load();
-  int64_t diff = estimate.daq_time - daq_time;
+  auto diff = static_cast<int64_t>(estimate.daq_time - daq_time);
   TLOG_DEBUG(TLVL_TIME_SYNC_PROPERTIES) << "Got a TimeSync timestamp = " << daq_time
                                         << ", system time = " << system_time << " when current timestamp estimate was "
                                         << estimate.daq_time << ". diff=" << diff;
 
-  if (m_most_recent_daq_time == std::numeric_limits<uint64_t>::max() || daq_time > m_most_recent_daq_time) {
+  if (m_most_recent_daq_time == s_invalid_ts || daq_time > m_most_recent_daq_time) {
     m_most_recent_daq_time = daq_time;
     m_most_recent_system_time = system_time;
   }
 
-  if (m_most_recent_daq_time != std::numeric_limits<uint64_t>::max()) {
+  if (m_most_recent_daq_time != s_invalid_ts) {
     // Update the current timestamp estimate, based on the most recently-read TimeSync
     using namespace std::chrono;
 
@@ -117,14 +120,14 @@ TimestampEstimator::add_timestamp_datapoint(uint64_t daq_time, uint64_t system_t
 
       // Warn user if current system time is more than 1s ahead of latest TimeSync system time. This could be a sign of
       // an issue, e.g. machine times out of sync
-      if (delta_time > 1e6)
+      if (delta_time > 1'000'000)
         ers::warning(LateTimeSync(ERS_HERE, delta_time));
 
-      const uint64_t new_timestamp = m_most_recent_daq_time + delta_time * m_clock_frequency_hz / 1000000;
+      const uint64_t new_timestamp = m_most_recent_daq_time + delta_time * m_clock_frequency_hz / 1000000; // NOLINT
 
       // Don't ever decrease the timestamp; just wait until enough
       // time passes that we want to increase it
-      if (estimate.daq_time == std::numeric_limits<uint64_t>::max() || new_timestamp >= estimate.daq_time) {
+      if (estimate.daq_time == s_invalid_ts || new_timestamp >= estimate.daq_time) {
         TLOG_DEBUG(TLVL_TIME_SYNC_NEW_ESTIMATE)
           << "Storing new timestamp estimate of " << new_timestamp << " ticks (..." << std::fixed
           << std::setprecision(8)
@@ -143,5 +146,4 @@ TimestampEstimator::add_timestamp_datapoint(uint64_t daq_time, uint64_t system_t
   }
 }
 
-} // namespace utilities
-} // namespace dunedaq
+} // namespace dunedaq::utilities
