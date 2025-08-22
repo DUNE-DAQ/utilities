@@ -25,19 +25,7 @@
 #include <memory>
 #include <string>
 
-namespace dunedaq {
-
-// Disable coverage collection LCOV_EXCL_START
-/**
- * @brief An ERS Issue raised when a threading state error occurs
- */
-ERS_DECLARE_ISSUE(utilities,                           // Namespace
-                  ThreadingIssue,                      // Issue Class Name
-                  "Threading Issue detected: " << err, // Message
-                  ((std::string)err))                  // Message parameters
-// Re-enable coverage collection LCOV_EXCL_STOP
-
-namespace utilities {
+namespace dunedaq::utilities {
 /**
  * @brief WorkerThread contains a thread which runs the do_work()
  * function
@@ -112,8 +100,6 @@ private:
   std::unique_ptr<std::jthread> m_working_thread;
   std::function<void(std::atomic<bool>&)> m_do_work;
 };
-} // namespace utilities
-
-} // namespace dunedaq
+} // namespace dunedaq::utilities
 
 #endif // UTILITIES_INCLUDE_UTILITIES_WORKERTHREAD_HPP_

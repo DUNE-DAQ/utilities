@@ -25,7 +25,10 @@ ERS_DECLARE_ISSUE(utilities,
                   "The hostname " << name << " could not be resolved: " << error,
                   ((std::string)name)((std::string)error))
 ERS_DECLARE_ISSUE(utilities, InvalidUri, "The URI string " << uri << " is not valid", ((std::string)uri))
-// Reenable coverage collection LCOV_EXCL_STOP
+/**
+ * @brief An ERS Issue raised when a threading state error occurs
+ */
+ERS_DECLARE_ISSUE(utilities, ThreadingIssue, "Threading Issue detected: " << err, ((std::string)err))
 
 ERS_DECLARE_ISSUE(utilities, InvalidTimeSync, "An invalid TimeSync message was received", ERS_EMPTY)
 
@@ -43,6 +46,7 @@ ERS_DECLARE_ISSUE(utilities,
                   FailedToGetTimestampEstimate,
                   "Failed to get timestamp estimate (was interrupted)",
                   ERS_EMPTY)
+// Re-enable coverage collection LCOV_EXCL_STOP
 } // namespace dunedaq
 
 #endif // UTILITIES_INCLUDE_UTILITIES_ISSUES_HPP_
