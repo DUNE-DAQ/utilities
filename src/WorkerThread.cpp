@@ -12,6 +12,7 @@
  */
 
 #include "utilities/WorkerThread.hpp"
+#include "utilities/Issues.hpp"
 
 #include <memory>
 #include <string>

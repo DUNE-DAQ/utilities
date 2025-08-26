@@ -10,7 +10,7 @@
  */
 
 #include "utilities/ReusableThread.hpp"
-#include "utilities/WorkerThread.hpp" // contains exception definition
+#include "utilities/Issues.hpp"
 
 #include <string>
 

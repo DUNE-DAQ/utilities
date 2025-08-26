@@ -8,6 +8,7 @@
  */
 
 #include "utilities/WorkerThread.hpp"
+#include "utilities/Issues.hpp"
 
 #define BOOST_TEST_MODULE WorkerThread_test // NOLINT
 
