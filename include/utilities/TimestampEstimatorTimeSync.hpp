@@ -68,7 +68,6 @@ private:
   std::mutex m_datapoint_mutex;
   uint32_t m_run_number{ 0 };                      // NOLINT(build/unsigned)
   std::atomic<uint64_t> m_received_timesync_count; // NOLINT(build/unsigned)
-  uint32_t m_current_process_id;                   // NOLINT(build/unsigned)
 };
 
 } // namespace dunedaq::utilities

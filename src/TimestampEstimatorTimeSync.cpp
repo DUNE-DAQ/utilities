@@ -33,7 +33,6 @@ TimestampEstimatorTimeSync::TimestampEstimatorTimeSync(uint64_t clock_frequency_
   , m_run_number(0)
   , m_received_timesync_count(0)
 {
-  m_current_process_id = static_cast<uint32_t>(getpid()); // NOLINT(build/unsigned)
 }
 
 TimestampEstimatorTimeSync::~TimestampEstimatorTimeSync() {}

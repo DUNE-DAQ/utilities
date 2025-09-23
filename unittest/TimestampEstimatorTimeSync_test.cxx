@@ -34,8 +34,8 @@ struct DummyTimeSync
   uint64_t sequence_number{ 0 }; // NOLINT(build/unsigned)
   /// Run number at time of creation
   uint32_t run_number{ 0 }; // NOLINT(build/unsigned)
-  /// PID of the creating process, for debugging
-  uint32_t source_pid{ 0 }; // NOLINT(build/unsigned)
+  /// SourceID::id of the creating process, for debugging
+  uint32_t source_id{ 0 }; // NOLINT(build/unsigned)
 };
 
 using namespace dunedaq;
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(Basics)
   ts.system_time = system_time_start;
   ts.sequence_number = 1;
   ts.run_number = run_num;
-  ts.source_pid = 12345;
+  ts.source_id = 12345;
 
   te.timesync_callback(ts);
 
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(StartupBehavior)
   ts.system_time = system_time_start;
   ts.sequence_number = 1;
   ts.run_number = run_num;
-  ts.source_pid = 12345;
+  ts.source_id = 12345;
 
   std::atomic<bool> do_not_continue_flag{ false };
   std::atomic<bool> do_continue_flag{ true };
