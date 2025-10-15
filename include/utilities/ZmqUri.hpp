@@ -1,34 +1,22 @@
 /**
  *
- * @file Resolver.hpp DNS Resolver methods
+ * @file ZmqUri.hpp Utilities for working with ZeroMQ URI strings
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#ifndef UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_
-#define UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_
+#ifndef UTILITIES_INCLUDE_UTILITIES_ZMQURI_HPP_
+#define UTILITIES_INCLUDE_UTILITIES_ZMQURI_HPP_
 
 #include "logging/Logging.hpp"
 #include "utilities/Issues.hpp"
-
-#include <arpa/nameser.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <resolv.h>
-#include <sys/types.h>
 
 #include <string>
 #include <vector>
 
 namespace dunedaq::utilities {
-
-std::vector<std::string>
-get_ips_from_hostname(std::string hostname);
-
-std::vector<std::string>
-resolve_uri_hostname(std::string connection_string);
 
 struct ZmqUri
 {
@@ -44,8 +32,10 @@ struct ZmqUri
   }
 
   explicit ZmqUri(std::string connection_string);
+
+  std::vector<std::string> get_uri_ip_addresses();
 };
 
 } // namespace dunedaq::utilities
 
-#endif // UTILITIES_INCLUDE_UTILITIES_RESOLVER_HPP_
+#endif // UTILITIES_INCLUDE_UTILITIES_ZMQURI_HPP_

@@ -29,7 +29,8 @@ daq_add_library(*.cpp LINK_LIBRARIES nlohmann_json::nlohmann_json logging::loggi
 
 # Unit tests
 
-daq_add_unit_test(Resolver_test           LINK_LIBRARIES logging::logging utilities)
+daq_add_unit_test(ZmqUri_test           LINK_LIBRARIES logging::logging utilities)
+daq_add_unit_test(get_ips_test           LINK_LIBRARIES logging::logging utilities)
 daq_add_unit_test(ReusableThread_test           LINK_LIBRARIES logging::logging utilities)
 daq_add_unit_test(WorkerThread_test           LINK_LIBRARIES logging::logging utilities)
 daq_add_unit_test(NamedObject_test        )
@@ -37,5 +38,6 @@ daq_add_unit_test(TimestampEstimatorSystem_test  LINK_LIBRARIES utilities)
 daq_add_unit_test(TimestampEstimatorTimeSync_test        LINK_LIBRARIES utilities)
 
 daq_add_application(resolve_hostname resolve_hostname.cpp TEST LINK_LIBRARIES utilities)
+daq_add_application(resolve_interface resolve_interface.cpp TEST LINK_LIBRARIES utilities)
 
 daq_install()
