@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "utilities/Resolver.hpp"
+#include "utilities/get_ips.hpp"
 
 int
 main(int argc, char* argv[])
@@ -19,7 +19,7 @@ main(int argc, char* argv[])
     exit(1);
   }
 
-  auto results = dunedaq::utilities::get_ips_from_hostname(argv[1]); // NOLINT
+  auto results = dunedaq::utilities::get_hostname_ips(argv[1]); // NOLINT
   for (auto const& r : results)
     std::cout << r << "\n"; // NOLINT
 

@@ -24,6 +24,10 @@ ERS_DECLARE_ISSUE(utilities,
                   NameNotFound,
                   "The hostname " << name << " could not be resolved: " << error,
                   ((std::string)name)((std::string)error))
+ERS_DECLARE_ISSUE(utilities,
+                  InterfaceNotFound,
+                  "The interface " << name << " does not exist or does not have an assigned IP address",
+                  ((std::string)name))
 ERS_DECLARE_ISSUE(utilities, InvalidUri, "The URI string " << uri << " is not valid", ((std::string)uri))
 /**
  * @brief An ERS Issue raised when a threading state error occurs
