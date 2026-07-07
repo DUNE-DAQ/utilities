@@ -1,0 +1,3 @@
+
+# clang formatting temporary files
+.clang-format*
