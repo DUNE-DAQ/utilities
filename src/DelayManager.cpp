@@ -33,15 +33,4 @@ DelayManager::is_delay_enabled(std::string const& delay_name)
   return false;
 }
 
-bool
-DelayManager::maybe_delay(std::string const& delay_name)
-{
-  if (m_delay_map.contains(delay_name)) {
-    if (m_delay_map[delay_name] > 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
 } // namespace dunedaq::utilities

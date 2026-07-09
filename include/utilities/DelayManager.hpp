@@ -9,6 +9,10 @@
 #ifndef UTILITIES_INCLUDE_UTILITIES_DELAYMANAGER_HPP_
 #define UTILITIES_INCLUDE_UTILITIES_DELAYMANAGER_HPP_
 
+#include "utilities/Issues.hpp"
+
+#include "logging/Logging.hpp"
+
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -41,7 +45,20 @@ public:
 
   bool is_delay_enabled(std::string const& delay_name);
 
-  bool maybe_delay(std::string const& delay_name); ///< Returns true if delay occured
+  inline bool maybe_delay(std::string const& delay_name,
+                          std::string const& text1,
+                          std::string const& text2) ///< Returns true if delay occured
+  {
+    if (m_delay_map.contains(delay_name)) {
+      uint32_t delay_usec = m_delay_map[delay_name];
+      if (delay_usec > 0) {
+        ers::warning(ArtificialDelay(ERS_HERE, delay_usec, delay_name, text1, text2));
+        usleep(delay_usec);
+        return true;
+      }
+    }
+    return false;
+  }
 
 private:
   DelayManager() {}

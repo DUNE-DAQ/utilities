@@ -50,6 +50,13 @@ ERS_DECLARE_ISSUE(utilities,
                   FailedToGetTimestampEstimate,
                   "Failed to get timestamp estimate (was interrupted)",
                   ERS_EMPTY)
+
+// ers::warning(ArtificialDelay(ERS_HERE, delay_usec, "destructing", "ZmqSender", m_connection_info.connection_name));
+ERS_DECLARE_ISSUE(utilities,
+                  ArtificialDelay,
+                  "An artificial delay of " << delay << " usec is being introduced in the " << delay_name << " code, "
+                                            << text1 << " " << text2,
+                  ((size_t)delay)((std::string)delay_name)((std::string)text1)((std::string)text2))
 // Re-enable coverage collection LCOV_EXCL_STOP
 } // namespace dunedaq
 
