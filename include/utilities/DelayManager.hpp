@@ -59,8 +59,7 @@ public:
           ers::warning(ArtificialDelay(ERS_HERE, delay_usec, delay_name, text1, text2));
           usleep(delay_usec);
           return true;
-        }
-        else {
+        } else {
           TLOG_DEBUG(0) << "NOTE: a delay of " << delay_usec << " usec was *not* executed "
                         << "for delay_name " << delay_name << " because delays are not "
                         << "globally enabled. Consider 'tonM -n DelayManager.hpp DEBUG+42'.";
