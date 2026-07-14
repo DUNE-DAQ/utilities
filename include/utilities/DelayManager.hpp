@@ -49,12 +49,22 @@ public:
                           std::string const& text1,
                           std::string const& text2) ///< Returns true if delay occured
   {
+    bool delays_are_globally_enabled = false;
+    TLOG_DEBUG(42) << "Delays are enabled globally is " << (delays_are_globally_enabled = true);
+
     if (m_delay_map.contains(delay_name)) {
       uint32_t delay_usec = m_delay_map[delay_name];
       if (delay_usec > 0) {
-        ers::warning(ArtificialDelay(ERS_HERE, delay_usec, delay_name, text1, text2));
-        usleep(delay_usec);
-        return true;
+        if (delays_are_globally_enabled) {
+          ers::warning(ArtificialDelay(ERS_HERE, delay_usec, delay_name, text1, text2));
+          usleep(delay_usec);
+          return true;
+        }
+        else {
+          TLOG_DEBUG(0) << "NOTE: a delay of " << delay_usec << " usec was *not* executed "
+                        << "for delay_name " << delay_name << " because delays are not "
+                        << "globally enabled. Consider 'tonM -n DelayManager.hpp DEBUG+42'.";
+        }
       }
     }
     return false;
