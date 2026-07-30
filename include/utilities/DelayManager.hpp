@@ -61,8 +61,8 @@ public:
         } else {
           TLOG_DEBUG(15) << "NOTE: a delay of " << delay_usec << " usec was *not* executed "
                          << "for delay_name " << delay_name << " because delays are not "
-                         << "globally enabled. Consider 'tonM -n DelayManager.hpp DEBUG+"
-                         << GLOBAL_ENABLE_TRACE_LEVEL << "'.";
+                         << "globally enabled. Consider 'tonM -n DelayManager.hpp DEBUG+" << GLOBAL_ENABLE_TRACE_LEVEL
+                         << "'.";
         }
       }
     }
