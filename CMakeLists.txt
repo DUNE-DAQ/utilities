@@ -36,6 +36,8 @@ daq_add_unit_test(WorkerThread_test           LINK_LIBRARIES logging::logging ut
 daq_add_unit_test(NamedObject_test        )
 daq_add_unit_test(TimestampEstimatorSystem_test  LINK_LIBRARIES utilities)
 daq_add_unit_test(TimestampEstimatorTimeSync_test        LINK_LIBRARIES utilities)
+daq_add_unit_test(DelayManager1_test        LINK_LIBRARIES utilities)
+daq_add_unit_test(DelayManager2_test        LINK_LIBRARIES utilities)
 
 daq_add_application(resolve_hostname resolve_hostname.cpp TEST LINK_LIBRARIES utilities)
 daq_add_application(resolve_interface resolve_interface.cpp TEST LINK_LIBRARIES utilities)
