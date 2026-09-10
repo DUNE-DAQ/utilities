@@ -25,11 +25,37 @@ dunedaq::utilities::ZmqUri::ZmqUri(std::string connection_string)
   scheme = connection_string.substr(0, connection_string.find("://"));
   connection_string = connection_string.substr(connection_string.find("://") + 3);
 
+  if (connection_string.find(";") != std::string::npos) {
+    auto endpoint = connection_string.substr(0, connection_string.find(";"));
+    connection_string = connection_string.substr(connection_string.find(";") + 1);
+    if (endpoint.find(":") != std::string::npos) {
+      endpoint_port = endpoint.substr(endpoint.find(":") + 1);
+      endpoint_host = endpoint.substr(0, endpoint.find(":"));
+    } else {
+      endpoint_host = endpoint;
+    }
+  }
+
   if (connection_string.find(":") != std::string::npos) {
     port = connection_string.substr(connection_string.find(":") + 1);
     connection_string = connection_string.substr(0, connection_string.find(":"));
   }
   host = connection_string;
+}
+
+std::string
+dunedaq::utilities::ZmqUri::to_string()
+{
+  if (scheme == "tcp") {
+
+    std::string endpoint_str = "";
+    if (endpoint_host != "") {
+      endpoint_str = endpoint_host + ":" + (endpoint_port != "" ? endpoint_port : "*") + ";";
+    }
+    std::string host_str = host + ":" + (port != "" ? port : "*");
+    return scheme + "://" + endpoint_str + host_str;
+  }
+  return scheme + "://" + host;
 }
 
 std::vector<std::string>
