@@ -20,6 +20,7 @@
 #include <filesystem>
 #include <fstream>
 #include <regex>
+#include <string>
 
 using namespace dunedaq::utilities;
 
@@ -57,14 +58,14 @@ BOOST_AUTO_TEST_CASE(InterfaceLookup)
   getifaddrs(&ifaddr);
 
   for (auto ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
-    if (ifa->ifa_name[0] == 'l') {
+    if (ifa->ifa_name[0] == 'l') { // NOLINT
       loopback_if_name = std::string(ifa->ifa_name);
       break;
     }
   }
 
   freeifaddrs(ifaddr);
-    
+
   auto res = get_interface_ip(loopback_if_name);
   BOOST_REQUIRE_EQUAL(res, "127.0.0.1");
 
