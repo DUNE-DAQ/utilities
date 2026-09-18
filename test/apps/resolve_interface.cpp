@@ -21,11 +21,11 @@ main(int argc, char* argv[])
 
   try {
     auto result = dunedaq::utilities::get_interface_ip(argv[1]); // NOLINT
-    std::cout << result << std::endl;
+    std::cout << result << std::endl;                            // NOLINT
     if (result.size() > 0)
       return 0;
   } catch (ers::Issue& expt) {
-    std::cout << "Encountered ERS issue while resolving interface IP: " << expt.what();
+    std::cout << "Encountered ERS issue while resolving interface IP: " << expt.what(); // NOLINT
   }
   return 1;
 }

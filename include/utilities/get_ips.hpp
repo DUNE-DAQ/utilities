@@ -100,12 +100,8 @@ get_interface_ip(std::string eth_device_name, bool throw_if_missing = false)
     freeifaddrs(ifaddr);
 
     if (!eth_found) {
-      auto err = InterfaceNotFound(ERS_HERE, eth_device_name);
-
-      if (throw_if_missing)
-        throw err;
-      else
-        ers::warning(err);
+      if (throw_if_missing) throw InterfaceNotFound(ERS_HERE, eth_device_name);
+      else ers::warning(InterfaceNotFound(ERS_HERE, eth_device_name));
     }
   }
 
