@@ -69,7 +69,8 @@ BOOST_AUTO_TEST_CASE(InterfaceLookup)
   auto res = get_interface_ip(loopback_if_name);
   BOOST_REQUIRE_EQUAL(res, "127.0.0.1");
 
-  BOOST_REQUIRE_EXCEPTION(get_interface_ip("thisifdoesntexist", true), InterfaceNotFound, [](InterfaceNotFound const&){return true;});
+  BOOST_REQUIRE_EXCEPTION(
+    get_interface_ip("thisifdoesntexist", true), InterfaceNotFound, [](InterfaceNotFound const&) { return true; });
   res = get_interface_ip("thisifdoesntexist");
   BOOST_REQUIRE(res.size() > 0);
 }

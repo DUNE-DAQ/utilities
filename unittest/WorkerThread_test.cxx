@@ -7,8 +7,8 @@
  * received with this code.
  */
 
-#include "utilities/WorkerThread.hpp"
 #include "utilities/Issues.hpp"
+#include "utilities/WorkerThread.hpp"
 
 #define BOOST_TEST_MODULE WorkerThread_test // NOLINT
 
