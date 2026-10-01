@@ -14,11 +14,13 @@
 #include "logging/Logging.hpp"
 #include "utilities/Issues.hpp"
 
+#include <arpa/inet.h>
 #include <arpa/nameser.h>
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <resolv.h>
+#include <sys/socket.h> // inet_aton
 #include <sys/types.h>
 
 #include <cerrno> // NOLINT(runtime/output_format
@@ -110,6 +112,39 @@ get_interface_ip(std::string eth_device_name, bool throw_if_missing = false)
   }
 
   return ipaddr;
+}
+
+inline std::vector<std::string>
+get_ips_matching_network(std::string ip_to_match)
+{
+  std::vector<std::string> output;
+  struct in_addr target_addr;
+  inet_aton(ip_to_match.c_str(), &target_addr);
+
+  struct ifaddrs* ifaddr = nullptr;
+  getifaddrs(&ifaddr);
+
+  for (auto ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
+    if (ifa->ifa_addr == nullptr || ifa->ifa_addr->sa_family != AF_INET) {
+      continue;
+    }
+
+    auto if_addr = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr)->sin_addr.s_addr;
+    auto netmask = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_netmask)->sin_addr.s_addr;
+    // Check if target IP is in this interface's address space
+    if ((if_addr & netmask) == (target_addr.s_addr & netmask)) {
+
+      char ip[NI_MAXHOST]; // NOLINT This is a char array for interfacing with the C networking API
+      int status = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), ip, NI_MAXHOST, nullptr, 0, NI_NUMERICHOST);
+      if (status != 0) {
+        continue;
+      }
+      output.push_back(std::string(ip));
+    }
+  }
+  freeifaddrs(ifaddr);
+
+  return output;
 }
 
 } // namespace dunedaq::utilities
