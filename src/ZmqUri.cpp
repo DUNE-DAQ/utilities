@@ -8,12 +8,11 @@
  */
 
 #include "utilities/ZmqUri.hpp"
-#include "utilities/get_ips.hpp"
 #include "utilities/Issues.hpp"
+#include "utilities/get_ips.hpp"
 
 #include <string>
 #include <vector>
-
 
 // ZMQ URIs are formatted as follows: tcp://{host}:{port}
 dunedaq::utilities::ZmqUri::ZmqUri(std::string connection_string)
