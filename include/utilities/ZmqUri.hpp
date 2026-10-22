@@ -21,15 +21,12 @@ namespace dunedaq::utilities {
 struct ZmqUri
 {
   std::string scheme{ "" };
+  std::string endpoint_host{ "" };
+  std::string endpoint_port{ "" };
   std::string host{ "" };
   std::string port{ "" };
-  std::string to_string()
-  {
-    auto tmp = scheme + "://" + host;
-    if (port != "")
-      return tmp + ":" + port;
-    return tmp;
-  }
+
+  std::string to_string();
 
   explicit ZmqUri(std::string connection_string);
 
